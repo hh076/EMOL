@@ -3,7 +3,7 @@
 MODULES='molint netlib trn wig symbolic'
 OPT=
 #RUBY=$HOME/ruby-2.4.1/bin/ruby
-RUBY=/usr/local/bin/ruby
+RUBY=ruby
 MAKE=make
 
 if [ x$1 = 'xclean' ] ; then
