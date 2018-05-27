@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (H_matrix)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_hmatrix.rb, line 53</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">obj</span> = <span class="ruby-keyword kw">nil</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@n</span> = <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@h_diag</span> = []
+            <span class="ruby-ivar">@index_i</span> = []
+            <span class="ruby-ivar">@index_j</span> = []
+            <span class="ruby-ivar">@value</span> = []
+            <span class="ruby-ivar">@eigen_value</span> = []
+            <span class="ruby-ivar">@eigen_vector</span> = []
+<span class="ruby-comment cmt">#            @eigen_value = GSL::Vector[]</span>
+<span class="ruby-comment cmt">#            @eigen_vector = GSL::Matrix[]</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>   <span class="ruby-comment cmt">#</span>
+<span class="ruby-comment cmt">#           molint = load_trnint( obj[ 0 ] )</span>
+<span class="ruby-comment cmt">#           molinfo, s_mo, h_mo, eris_mo = load_trnint( obj[ 0 ] )</span>
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ]
+            <span class="ruby-identifier">molinfo</span> = <span class="ruby-constant">Data_molinfo</span><span class="ruby-operator">::</span><span class="ruby-identifier">molinfo_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">1</span> ]
+<span class="ruby-comment cmt">#           load MO integrals</span>
+            <span class="ruby-identifier">molint</span> = <span class="ruby-constant">Data_trnint</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnint_data</span>
+            <span class="ruby-identifier">core_energy</span> = <span class="ruby-identifier">molint</span>.<span class="ruby-identifier">core_energy</span>
+<span class="ruby-comment cmt">#           one electron integrals (tri)</span>
+            <span class="ruby-identifier">h_mo</span> = <span class="ruby-identifier">molint</span>.<span class="ruby-identifier">h_mo</span>
+<span class="ruby-comment cmt">#           two electron integrals (tri, tri, tri)</span>
+            <span class="ruby-identifier">eris_mo</span> = <span class="ruby-identifier">molint</span>.<span class="ruby-identifier">eris_mo</span>
+
+<span class="ruby-comment cmt">#           expr   = load_expression( obj[ 1 ] )</span>
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">2</span> ]
+            <span class="ruby-identifier">expr</span> = <span class="ruby-constant">Data_expression</span><span class="ruby-operator">::</span><span class="ruby-identifier">expr_data</span>
+<span class="ruby-comment cmt">#           expr = Data_super_CI_expression::expr_data</span>
+            <span class="ruby-ivar">@n</span> = <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">csf_list</span>.<span class="ruby-identifier">size</span>
+<span class="ruby-comment cmt">#                   H 行列の生成</span>
+            <span class="ruby-identifier">mkhmat</span>( <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">h_mo</span>, <span class="ruby-identifier">eris_mo</span> )
+            <span class="ruby-identifier">nstate</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nstate</span>
+            <span class="ruby-identifier">thresh</span> = <span class="ruby-constant">EmolConsts</span><span class="ruby-operator">::</span><span class="ruby-constant">THR_CONV_WF</span>
+<span class="ruby-comment cmt">#                   H 行列の Liu によるアルゴリズムによる対角化</span>
+            <span class="ruby-identifier">eigen_val</span>, <span class="ruby-ivar">@eigen_vector</span> = <span class="ruby-constant">Liu</span>.<span class="ruby-identifier">new</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">nstate</span>, <span class="ruby-identifier">thresh</span>
+            ).<span class="ruby-identifier">solve</span>
+<span class="ruby-comment cmt">#                   凍結殼エネルギーの付加</span>
+            <span class="ruby-ivar">@eigen_value</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">nstate</span> )
+            (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nstate</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">|</span>
+                <span class="ruby-ivar">@eigen_value</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">eigen_val</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">molint</span>.<span class="ruby-identifier">core_energy</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;\n\n&quot;</span> )
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; Eigenvalues\n&quot;</span> )
+            (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nstate</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  %5d          &quot;</span>, <span class="ruby-identifier">k</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> )
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;\n&quot;</span> )
+
+            (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nstate</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  %14.10f &quot;</span>, <span class="ruby-ivar">@eigen_value</span>[ <span class="ruby-identifier">k</span> ] )
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;\n\n&quot;</span> )
+            
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Expression</span> ) ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@ncsf</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">ncsf</span>
+            <span class="ruby-ivar">@h_diag</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">h_diag</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@index_i</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">index_i</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@index_j</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">index_j</span>.<span class="ruby-identifier">clone</span> 
+            <span class="ruby-ivar">@value</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">clone</span> 
+            <span class="ruby-ivar">@eigen_value</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">eigen_value</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@eigen_vector</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">eigen_vector</span>.<span class="ruby-identifier">clone</span>
+        <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

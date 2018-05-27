@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>print_ci_result (NO_Analysis)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_no.rb, line 161</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">print_ci_result</span>( <span class="ruby-identifier">istate</span>, <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">csf_list</span>, <span class="ruby-identifier">n_core</span>, <span class="ruby-identifier">n_active</span>, <span class="ruby-identifier">n_external</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">istate</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;\n %2dst CI EIGENSTATE   TOTAL ENERGY =  %16.10f \n\n&quot;</span>, <span class="ruby-identifier">istate</span>, <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">istate</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ])
+        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">istate</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;\n %2dnd CI EIGENSTATE   TOTAL ENERGY =  %16.10f \n\n&quot;</span>, <span class="ruby-identifier">istate</span>, <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">istate</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ])
+        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">istate</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;\n %2drd CI EIGENSTATE   TOTAL ENERGY =  %16.10f \n\n&quot;</span>, <span class="ruby-identifier">istate</span>, <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">istate</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ])
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;\n %2dth CI EIGENSTATE   TOTAL ENERGY =  %16.10f \n\n&quot;</span>, <span class="ruby-identifier">istate</span>, <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">istate</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ])
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;    CSF       COEF     ( CORE / ACTIVE / EXTERNAL )\n&quot;</span>)
+        <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;    ---    ----------   &quot;</span>) 
+        <span class="ruby-identifier">n_core</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;--&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  &quot;</span>)
+        <span class="ruby-identifier">n_active</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;--&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  &quot;</span>)
+        <span class="ruby-identifier">n_external</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;--&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  \n&quot;</span>)
+
+        <span class="ruby-identifier">vec_print</span> = {}
+        <span class="ruby-identifier">vec</span> = <span class="ruby-identifier">evec</span>.<span class="ruby-identifier">column</span>( <span class="ruby-identifier">istate</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+        <span class="ruby-identifier">vec</span>.<span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span><span class="ruby-value">.01</span>
+                <span class="ruby-identifier">vec_print</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">i</span>,  <span class="ruby-identifier">x</span> )
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-identifier">vec_print</span>.<span class="ruby-identifier">sort</span>{ <span class="ruby-operator">|</span>(<span class="ruby-identifier">k1</span>, <span class="ruby-identifier">v1</span>), (<span class="ruby-identifier">k2</span>, <span class="ruby-identifier">v2</span>)<span class="ruby-operator">|</span> <span class="ruby-identifier">v2</span>.<span class="ruby-identifier">abs</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">v1</span>.<span class="ruby-identifier">abs</span> }.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">|</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  %5d  &quot;</span>, <span class="ruby-identifier">x</span>[ <span class="ruby-value">0</span> ] <span class="ruby-operator">+</span> <span class="ruby-value">1</span>)
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot; %10.6f   &quot;</span>, <span class="ruby-identifier">x</span>[ <span class="ruby-value">1</span> ])
+            <span class="ruby-identifier">a</span> = <span class="ruby-identifier">csf_list</span>[ <span class="ruby-identifier">x</span>[ <span class="ruby-value">0</span> ] ]
+ 
+            <span class="ruby-identifier">k</span> = <span class="ruby-value">0</span>
+            <span class="ruby-identifier">n_core</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%2s&quot;</span>, <span class="ruby-identifier">a</span>[ <span class="ruby-identifier">k</span> ] )
+                <span class="ruby-identifier">k</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  &quot;</span>)
+            <span class="ruby-identifier">n_active</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%2s&quot;</span>, <span class="ruby-identifier">a</span>[ <span class="ruby-identifier">k</span> ] )
+                <span class="ruby-identifier">k</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  &quot;</span>)
+            <span class="ruby-identifier">n_external</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%2s&quot;</span>, <span class="ruby-identifier">a</span>[ <span class="ruby-identifier">k</span> ] )
+                <span class="ruby-identifier">k</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;  \n&quot;</span>)
+        <span class="ruby-comment cmt">#   csf_list[ x[ 0 ] ].each do |y|</span>
+        <span class="ruby-comment cmt">#       printf(&quot;%2s&quot;, y)</span>
+        <span class="ruby-comment cmt">#   end</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

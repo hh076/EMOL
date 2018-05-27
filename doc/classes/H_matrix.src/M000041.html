@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>mkhmat (H_matrix)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_hmatrix.rb, line 122</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">mkhmat</span>( <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">h_mo</span>, <span class="ruby-identifier">eris_mo</span> )
+<span class="ruby-comment cmt"># 機能 ：H 行列要素の生成</span>
+<span class="ruby-comment cmt">#     : 対角要素 ... @h_diag ( 1次元配列)</span>
+<span class="ruby-comment cmt">#     : 非対角要素 ... 非零要素のみ(閾値 EmolConsts::THR_ZERO 以上)</span>
+<span class="ruby-comment cmt">#     :               インデックス(index_i, index_j) と値(value)</span>
+<span class="ruby-comment cmt">#     :                 </span>
+<span class="ruby-comment cmt"># パラメータ：expr ... エネルギー表式インスタンス</span>
+<span class="ruby-comment cmt">#         : h_mo ... 1電子積分</span>
+<span class="ruby-comment cmt">#         ：eris_mo ... 2電子積分</span>
+<span class="ruby-comment cmt"># 戻り値   ：無し</span>
+<span class="ruby-comment cmt"># 備考：エネルギー表式インスタンスは、CSF の組み合わせ ij、 積分通し番号 pqrs、</span>
+<span class="ruby-comment cmt">#      結合係数 coef の配列をクラス変数として持つ。一つの H 要素は複数の積分からの</span>
+<span class="ruby-comment cmt">#      寄与があり、インスタンス生成時に ij に関しては整列化されている。</span>
+<span class="ruby-comment cmt">#      このインスタンスに含まれる H 要素には分子積分の値から非常に絶対値の小さなもの</span>
+<span class="ruby-comment cmt">#      もあり、閾値 EmolConsts::THR_ZERO 以下のものはゼロとみなす。</span>
+<span class="ruby-comment cmt">#                    </span>
+<span class="ruby-comment cmt"># 初期設定</span>
+        <span class="ruby-ivar">@h_diag</span> = []
+        <span class="ruby-ivar">@index_i</span> = []
+        <span class="ruby-ivar">@index_j</span> = []
+        <span class="ruby-ivar">@value</span> = []
+        <span class="ruby-identifier">i_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">j_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_end</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">tmp</span> = <span class="ruby-value">0</span><span class="ruby-value">.0</span>
+<span class="ruby-comment cmt"># エネルギー表式ループ開始</span>
+        <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">ij</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ij</span>, <span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">num</span> = <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">pqrs</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-identifier">coef</span> = <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">coef</span>[ <span class="ruby-identifier">k</span> ]
+<span class="ruby-comment cmt"># 同じ H 要素の処理を続行</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">ij_prev</span>
+                <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span>; <span class="ruby-identifier">j</span> = <span class="ruby-identifier">j_prev</span> 
+<span class="ruby-comment cmt"># 処理中のH 要素の書き出し</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">tmp</span>.<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-constant">EmolConsts</span><span class="ruby-operator">::</span><span class="ruby-constant">THR_ZERO</span> 
+                    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">i_prev</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">j_prev</span>
+                        <span class="ruby-ivar">@h_diag</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">tmp</span> )
+                    <span class="ruby-keyword kw">else</span>
+                        <span class="ruby-ivar">@index_i</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">i_prev</span> )
+                        <span class="ruby-ivar">@index_j</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">j_prev</span> )
+                        <span class="ruby-ivar">@value</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">tmp</span> )
+                    <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt"># 前表式と異なる H 要素への処理開始、index_i, index_j の生成</span>
+                <span class="ruby-identifier">tmp</span> = <span class="ruby-value">0</span><span class="ruby-value">.0</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+                <span class="ruby-keyword kw">else</span>
+                    <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+                    <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt"># 係数*積分値の足し込み</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">num</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">h_mo</span>.<span class="ruby-identifier">size</span>
+                <span class="ruby-identifier">tmp</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">coef</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">eris_mo</span>[ <span class="ruby-identifier">num</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">h_mo</span>.<span class="ruby-identifier">size</span> ]  
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">tmp</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">coef</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">h_mo</span>[ <span class="ruby-identifier">num</span> ]  
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">ij_prev</span> = <span class="ruby-identifier">ij</span>
+            <span class="ruby-identifier">i_prev</span> = <span class="ruby-identifier">i</span>
+            <span class="ruby-identifier">j_prev</span> = <span class="ruby-identifier">j</span>
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt"># H 対角要素の書き出し</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">tmp</span>.<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-constant">EmolConsts</span><span class="ruby-operator">::</span><span class="ruby-constant">THR_ZERO</span> 
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">i_prev</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">j_prev</span>
+                <span class="ruby-ivar">@h_diag</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">tmp</span> )
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-ivar">@index_i</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">i_prev</span> )
+                <span class="ruby-ivar">@index_j</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">j_prev</span> )
+                <span class="ruby-ivar">@value</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">tmp</span> )
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#        @h_diag.each_with_index do | v, i |</span>
+<span class="ruby-comment cmt">#           printf( &quot; %5d   %12.6f  \n&quot;, i, v )</span>
+<span class="ruby-comment cmt">#        end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

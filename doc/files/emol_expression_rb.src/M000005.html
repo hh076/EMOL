@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>hmlkva (emol_expression.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 51</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hmlkva</span>( <span class="ruby-identifier">gf</span>, <span class="ruby-identifier">ff</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">psi</span>, <span class="ruby-identifier">phi</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span> )
+    <span class="ruby-keyword kw">begin</span>
+        <span class="ruby-identifier">w</span> = <span class="ruby-value">0</span><span class="ruby-value">.0e0</span>
+    
+    <span class="ruby-comment cmt">#   #RTNCODE = 0 ;</span>
+        <span class="ruby-identifier">rtn_code</span> = <span class="ruby-value">0</span>
+    
+        <span class="ruby-comment cmt">#H = REPR_OP ( HF );</span>
+        <span class="ruby-comment cmt">#F = REPR_STATE ( FF );</span>
+        <span class="ruby-comment cmt">#G = REPR_STATE ( GF );</span>
+        <span class="ruby-identifier">h</span> = <span class="ruby-constant">REPR_OP</span>[    <span class="ruby-identifier">hf</span> ]
+        <span class="ruby-identifier">f</span> = <span class="ruby-constant">REPR_STATE</span>[ <span class="ruby-identifier">ff</span> ]
+        <span class="ruby-identifier">g</span> = <span class="ruby-constant">REPR_STATE</span>[ <span class="ruby-identifier">gf</span> ]
+    
+        <span class="ruby-comment cmt">#IF        GF = EMPTY ! GF = FULL   THEN  PSI_PREV = PSI ;</span>
+        <span class="ruby-comment cmt">#ELSE IF   GF = UP                  THEN  PSI_PREV = PSI - 1 ;</span>
+        <span class="ruby-comment cmt">#ELSE IF   GF = DOWN                THEN  PSI_PREV = PSI + 1 ;</span>
+        <span class="ruby-comment cmt">#</span>
+        <span class="ruby-comment cmt">#IF        FF = EMPTY ! FF = FULL   THEN  PHI_PREV = PHI ;</span>
+        <span class="ruby-comment cmt">#ELSE IF   FF = UP                  THEN  PHI_PREV = PHI - 1 ;</span>
+        <span class="ruby-comment cmt">#ELSE IF   FF = DOWN                THEN  PHI_PREV = PHI + 1 ;</span>
+    
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">psi_prev</span> = <span class="ruby-identifier">psi</span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">psi_prev</span> = <span class="ruby-identifier">psi</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">psi_prev</span> = <span class="ruby-identifier">psi</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">phi_prev</span> = <span class="ruby-identifier">phi</span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">phi_prev</span> = <span class="ruby-identifier">phi</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">phi_prev</span> = <span class="ruby-identifier">phi</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">end</span>
+    
+        <span class="ruby-comment cmt">#IF     PSI   &lt;= 0 ! PSI_PREV   &lt;= 0</span>
+        <span class="ruby-comment cmt">#     ! PHI   &lt;= 0 ! PHI_PREV   &lt;= 0</span>
+        <span class="ruby-comment cmt">#     ! THETA &lt;= 0 ! THETA_PREV &lt;= 0</span>
+        <span class="ruby-comment cmt">#THEN DO ;</span>
+        <span class="ruby-comment cmt">#   W = 0 ;</span>
+    
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">psi</span>   <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">psi_prev</span>   <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span>
+             <span class="ruby-identifier">phi</span>   <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">phi_prev</span>   <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span>
+             <span class="ruby-identifier">theta</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">theta_prev</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">w</span> = <span class="ruby-value">0</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidArgumentRange</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-comment cmt">#/* multiply    sqrt (theta ( k-1 ) / theta ( k ) )            */</span>
+            <span class="ruby-comment cmt">#/* when theta ( k-1 ) &gt; theta ( k )                           */</span>
+            <span class="ruby-comment cmt">#/* i. e.   twice   for  (x(x(x x)s)d)s type                   */</span>
+            <span class="ruby-comment cmt">#/*         sqrt(3) for  (x(x(x x)t)d)s type                   */</span>
+            <span class="ruby-comment cmt">#/* where x is a or c.                                         */</span>
+            <span class="ruby-comment cmt">#/* modified 84-08-06  SAS                                     */</span>
+            <span class="ruby-comment cmt">#/* re-modified 84-08-06  SAS                                  */</span>
+            <span class="ruby-comment cmt">#/* THETA_GT = MAX ( THETA, THETA_PREV )                       */</span>
+            <span class="ruby-comment cmt">#W =  (-1)**( ( F - 1 ) * ( THETA_PREV - 1 ) )</span>
+            <span class="ruby-comment cmt"># * MATRIX_EL ( GF, HF, FF )</span>
+            <span class="ruby-comment cmt"># * SQRT  ( FLOAT ( PSI * PHI_PREV * THETA, 53 ) )</span>
+            <span class="ruby-comment cmt"># * WIG9X ( H,   THETA_PREV,  THETA,</span>
+            <span class="ruby-comment cmt">#           F,   PHI_PREV,    PHI,</span>
+            <span class="ruby-comment cmt">#           G,   PSI_PREV,    PSI   ) ; /* rev. 84-09-04  */</span>
+    
+            <span class="ruby-identifier">phase</span>   = (<span class="ruby-value">-1</span>)<span class="ruby-operator">**</span>( ( <span class="ruby-identifier">f</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">*</span> ( <span class="ruby-identifier">theta_prev</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) )
+            <span class="ruby-identifier">matelem</span> = <span class="ruby-identifier">matrix_el</span>( <span class="ruby-identifier">gf</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">ff</span> )
+            <span class="ruby-identifier">mult</span>    = <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( ( <span class="ruby-identifier">psi</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">phi_prev</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">theta</span> ).<span class="ruby-identifier">to_f</span> )
+            <span class="ruby-identifier">ninej</span>   = <span class="ruby-constant">Wigcoef</span>.<span class="ruby-identifier">wig9x</span>( <span class="ruby-identifier">h</span>,  <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">theta</span>,
+                                     <span class="ruby-identifier">f</span>,  <span class="ruby-identifier">phi_prev</span>,   <span class="ruby-identifier">phi</span>,
+                                     <span class="ruby-identifier">g</span>,  <span class="ruby-identifier">psi_prev</span>,   <span class="ruby-identifier">psi</span>   )
+    
+            <span class="ruby-identifier">w</span> = (<span class="ruby-value">-1</span>)<span class="ruby-operator">**</span>( ( <span class="ruby-identifier">f</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">*</span> ( <span class="ruby-identifier">theta_prev</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) ) <span class="ruby-operator">*</span>
+                <span class="ruby-identifier">matrix_el</span>( <span class="ruby-identifier">gf</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">ff</span> ) <span class="ruby-operator">*</span>
+                <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( ( <span class="ruby-identifier">psi</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">phi_prev</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">theta</span> ).<span class="ruby-identifier">to_f</span> ) <span class="ruby-operator">*</span>
+                <span class="ruby-constant">Wigcoef</span>.<span class="ruby-identifier">wig9x</span>( <span class="ruby-identifier">h</span>,  <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">theta</span>,
+                               <span class="ruby-identifier">f</span>,  <span class="ruby-identifier">phi_prev</span>,   <span class="ruby-identifier">phi</span>,
+                               <span class="ruby-identifier">g</span>,  <span class="ruby-identifier">psi_prev</span>,   <span class="ruby-identifier">psi</span>   )
+    
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$opt_debug_print</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  HF THETA THETA_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_OPSTR</span>[<span class="ruby-identifier">hf</span>], <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span> )
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  GF PSI     PSI_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">gf</span>], <span class="ruby-identifier">psi</span>,   <span class="ruby-identifier">psi_prev</span>   )
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  FF PHI     PHI_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">ff</span>], <span class="ruby-identifier">phi</span>,   <span class="ruby-identifier">phi_prev</span>   )
+                <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  phase = %14.6e, mult = %14.6e, 9j = %14.6e, mat = %14.6e, w = %14.6e\n&quot;</span>,
+                        <span class="ruby-identifier">phase</span>, <span class="ruby-identifier">mult</span>, <span class="ruby-identifier">ninej</span>, <span class="ruby-identifier">matelem</span>, <span class="ruby-identifier">w</span> )
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+ 
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">InvalidArgumentRange</span>
+        <span class="ruby-identifier">rtn_code</span> = <span class="ruby-value">1</span>
+        <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;HMLKVA: INVALID ARGUMENTS ?\n&quot;</span>
+        <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  HF THETA THETA_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_OPSTR</span>[<span class="ruby-identifier">hf</span>], <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span> )
+        <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  GF PSI     PSI_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">gf</span>], <span class="ruby-identifier">psi</span>,   <span class="ruby-identifier">psi_prev</span>   )
+        <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;  GF PHI     PHI_PREV :  %6s %4d %4d\n&quot;</span>, <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">ff</span>], <span class="ruby-identifier">phi</span>,   <span class="ruby-identifier">phi_prev</span>   )
+    <span class="ruby-comment cmt">#rescue InvalidLkValue</span>
+    <span class="ruby-comment cmt">#    rtn_code = 1</span>
+    <span class="ruby-comment cmt">#    $stderr.print &quot;HMLKVA: ERROR CONDITION ?\n&quot;</span>
+    <span class="ruby-comment cmt">#rescue InvalidLkValueAttention</span>
+    <span class="ruby-comment cmt">#    rtn_code = 2</span>
+    <span class="ruby-comment cmt">#    $stderr.print &quot;HMLKVA: ATTENTION ?\n&quot;</span>
+    <span class="ruby-comment cmt">#rescue InvalidBySystemError</span>
+    <span class="ruby-comment cmt">#    rtn_code = 10</span>
+    <span class="ruby-comment cmt">#    $stderr.print &quot;HMLKVA: SYSTEM ERROR ?\n&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">w</span>
+
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

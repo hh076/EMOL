@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>mk_dens (StateDensity)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_casscf.rb, line 88</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">mk_dens</span>( <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">civec</span> )
+        <span class="ruby-identifier">npq</span> = <span class="ruby-ivar">@nob</span> <span class="ruby-operator">*</span> (<span class="ruby-ivar">@nob</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+        <span class="ruby-identifier">npqrs</span> = <span class="ruby-identifier">npq</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">npq</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+        <span class="ruby-ivar">@dens1</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">calloc</span>(<span class="ruby-identifier">npq</span>)
+        <span class="ruby-ivar">@dens2</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">calloc</span>(<span class="ruby-identifier">npqrs</span>)
+
+        <span class="ruby-identifier">i_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">j_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_end</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">cicj</span> = <span class="ruby-identifier">civec</span>[ <span class="ruby-value">0</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">civec</span>[ <span class="ruby-value">0</span> ]
+        <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">ij</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ij</span>, <span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">num</span> = <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">pqrs</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-identifier">coef</span> = <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">coef</span>[ <span class="ruby-identifier">k</span> ]
+          <span class="ruby-comment cmt"># printf( &quot; %5d   %5d  %12.6f &quot;, ij, num, coef )</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">ij_prev</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+                <span class="ruby-keyword kw">else</span>
+                    <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i_prev</span>
+                    <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+                    <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">j</span>
+                    <span class="ruby-identifier">cicj</span> = <span class="ruby-identifier">civec</span>[ <span class="ruby-identifier">i</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">civec</span>[ <span class="ruby-identifier">j</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ]
+                <span class="ruby-keyword kw">else</span>
+                    <span class="ruby-identifier">cicj</span> = <span class="ruby-identifier">civec</span>[ <span class="ruby-identifier">i</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">civec</span>[ <span class="ruby-identifier">j</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ] <span class="ruby-operator">*</span> <span class="ruby-value">2</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">ij_prev</span> = <span class="ruby-identifier">ij</span>
+                <span class="ruby-identifier">i_prev</span> = <span class="ruby-identifier">i</span>
+                <span class="ruby-identifier">j_prev</span> = <span class="ruby-identifier">j</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">num</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">npq</span>
+               <span class="ruby-ivar">@dens2</span>[ <span class="ruby-identifier">num</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">npq</span> ] <span class="ruby-operator">+=</span> <span class="ruby-identifier">cicj</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">coef</span> 
+            <span class="ruby-comment cmt">#  printf( &quot; &gt;&gt; dens2[ %5d  ] \n&quot;, num - npq )</span>
+            <span class="ruby-keyword kw">else</span>
+               <span class="ruby-ivar">@dens1</span>[ <span class="ruby-identifier">num</span> ] <span class="ruby-operator">+=</span> <span class="ruby-identifier">cicj</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">coef</span> 
+            <span class="ruby-comment cmt">#  printf( &quot; &gt;&gt; dens1[ %5d  ] \n&quot;, num )</span>
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

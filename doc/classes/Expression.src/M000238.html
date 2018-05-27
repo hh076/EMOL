@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Expression)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 1047</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">obj</span> = <span class="ruby-keyword kw">nil</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@norb</span> = <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@csf_list</span> = []
+            <span class="ruby-ivar">@ij</span> = []
+            <span class="ruby-ivar">@pqrs</span> = []
+            <span class="ruby-ivar">@coef</span> = []
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>   <span class="ruby-comment cmt">#</span>
+            <span class="ruby-ivar">@norb</span> = <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ]
+            <span class="ruby-ivar">@csf_list</span> = <span class="ruby-identifier">obj</span>[ <span class="ruby-value">1</span> ].<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@ij</span> = []
+            <span class="ruby-ivar">@pqrs</span> = []
+            <span class="ruby-ivar">@coef</span> = []
+            <span class="ruby-identifier">obj</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">|</span>
+                <span class="ruby-ivar">@ij</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">x</span>[<span class="ruby-value">0</span>][<span class="ruby-value">0</span>] <span class="ruby-operator">+</span> <span class="ruby-value">1</span> )
+                <span class="ruby-ivar">@pqrs</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">x</span>[<span class="ruby-value">0</span>][<span class="ruby-value">1</span>] )
+                <span class="ruby-ivar">@coef</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">x</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">value</span> )
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Expression</span> ) ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@norb</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">norb</span>
+            <span class="ruby-ivar">@csf_list</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">csf_list</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@ij</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">ij</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@pqrs</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">pqrs</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@coef</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">coef</span>.<span class="ruby-identifier">clone</span> 
+        <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

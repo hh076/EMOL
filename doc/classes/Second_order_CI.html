@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Second_order_CI</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Second_order_CI</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/drt_soci_rb.html">
+                drt_soci.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000152">generate_core_node</a>&nbsp;&nbsp;
+      <a href="#M000153">generate_external_node</a>&nbsp;&nbsp;
+      <a href="#M000154">generate_valence_node</a>&nbsp;&nbsp;
+      <a href="#M000150">get_arc_weight</a>&nbsp;&nbsp;
+      <a href="#M000166">get_csf</a>&nbsp;&nbsp;
+      <a href="#M000159">get_lower_path_weights</a>&nbsp;&nbsp;
+      <a href="#M000165">get_ncsf</a>&nbsp;&nbsp;
+      <a href="#M000139">get_ncsfs</a>&nbsp;&nbsp;
+      <a href="#M000137">get_nnodes</a>&nbsp;&nbsp;
+      <a href="#M000141">get_norb</a>&nbsp;&nbsp;
+      <a href="#M000145">get_nve</a>&nbsp;&nbsp;
+      <a href="#M000143">get_orb</a>&nbsp;&nbsp;
+      <a href="#M000146">get_spin</a>&nbsp;&nbsp;
+      <a href="#M000148">get_upper_arc</a>&nbsp;&nbsp;
+      <a href="#M000162">get_upper_path_weights</a>&nbsp;&nbsp;
+      <a href="#M000163">mk_csf_list</a>&nbsp;&nbsp;
+      <a href="#M000134">new</a>&nbsp;&nbsp;
+      <a href="#M000138">nnode</a>&nbsp;&nbsp;
+      <a href="#M000142">norb</a>&nbsp;&nbsp;
+      <a href="#M000140">r_ncsf</a>&nbsp;&nbsp;
+      <a href="#M000151">r_upperarcw</a>&nbsp;&nbsp;
+      <a href="#M000149">r_uppercon</a>&nbsp;&nbsp;
+      <a href="#M000144">r_upperlevel</a>&nbsp;&nbsp;
+      <a href="#M000147">r_upperspin</a>&nbsp;&nbsp;
+      <a href="#M000157">set_lower_path_weights</a>&nbsp;&nbsp;
+      <a href="#M000160">set_upper_path_weights</a>&nbsp;&nbsp;
+      <a href="#M000136">show_drt</a>&nbsp;&nbsp;
+      <a href="#M000135">show_drt_title</a>&nbsp;&nbsp;
+      <a href="#M000156">store_number_lower_arcs</a>&nbsp;&nbsp;
+      <a href="#M000155">store_number_upper_arcs</a>&nbsp;&nbsp;
+      <a href="#M000164">tree_search_csf</a>&nbsp;&nbsp;
+      <a href="#M000158">tree_search_lower_path</a>&nbsp;&nbsp;
+      <a href="#M000161">tree_search_upper_path</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000134" class="method-detail">
+        <a name="M000134"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000134.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000134.html');return false;">
+          <span class="method-name">new</span><span class="method-args">( _nve, _is, _ncore, _nval, _next )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000152" class="method-detail">
+        <a name="M000152"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000152.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000152.html');return false;">
+          <span class="method-name">generate_core_node</span><span class="method-args">( h_nodes )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Total spin = S, 電子数 = Nve core 領域の占有数 : Nve, Nve-1, nve-2
+( 0, 1, 2 holes )
+</p>
+<p>
+core 領域の nodes ( orb#, nve, 2S ) orb# 0 : ( 0, 0, 0 ) &#8230; bottom
+</p>
+<pre>
+         empty        up           down
+     1 : ( 1, 0, 0 ), ( 1, 1, 1 ), ( 1, 2, 0 )
+     k &gt;= 2
+       : ( k, 2k - 2, 0 ), ( k, 2k - 2, 0 )
+       : ( k, 2k - 1, 1 ),
+       : ( k, 2k, 0 )
+</pre>
+<p>
+説明 k ( &gt;= 2)-th
+軌道までの電子数は、既に2電子励起した場合、
+</p>
+<pre>
+     既に1電子励起した場合、励起がない場合があり、それぞれの場合の
+     電子数は 2k-2、2k-1、2k である。スピン量子数は、2電子励起では
+     一重項(閉殼、開殼 S = 0)と三重項(開殼 S = 1)、1電子励起では
+     二重項(S = 1/2 ) そして励起のない場合は一重項( S = 0 ) の
+     node ができる。
+</pre>
+        </div>
+      </div>
+
+      <div id="method-M000153" class="method-detail">
+        <a name="M000153"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000153.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000153.html');return false;">
+          <span class="method-name">generate_external_node</span><span class="method-args">( h_nodes )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+external 領域の nodes
+</p>
+<pre>
+     0, 1, 2 particles
+</pre>
+<p>
+orb# k &lt; N-1 : ( k, ne-2, 2S+2 ), ( k, ne-2, 2S ), ( k, ne-2, 2S-2 )
+</p>
+<pre>
+       : ( k, ne-1, 2S+1 ), ( k, ne-1, 2S-1 )
+       : ( N-1, ne, 2S )
+</pre>
+<p>
+orb# N-1 : ( N-1, ne-2, 2S )
+</p>
+<pre>
+       : ( N-1, ne-1, 2S+1 ), ( N-1, ne-1, 2S-1 )
+       : ( N-1, ne, 2S )
+     N : ( N, ne, 2S )  ... top
+</pre>
+<p>
+説明 external の node の電子数は全電子数 ne, ne-1, ne-2 が
+</p>
+<pre>
+     許される。ne の場合のスピンは S、ne-1 の場合はさらに一電子
+     が占有する( up, down )のでスピンは S+1/2, S-1/2 となる。
+     ne-2 の場合はさらに 2 電子が占有されるので (up,up), (down,
+     down), (up, down), (down, up), (full)、スピンとしては
+     S+1, S-1, S となる。ただし、軌道が N-1 の場合は 2 個の電子
+     が N 番目の軌道にしか占有することができないので、(full) に
+     対応してスピンは S しか許されない。
+</pre>
+        </div>
+      </div>
+
+      <div id="method-M000154" class="method-detail">
+        <a name="M000154"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000154.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000154.html');return false;">
+          <span class="method-name">generate_valence_node</span><span class="method-args">(orb, nve, is, dest, h_nodes)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+valence 領域の nodes 作成
+</p>
+<pre>
+  external の nodes に接続する nodes を再帰的に作成
+</pre>
+        </div>
+      </div>
+
+      <div id="method-M000150" class="method-detail">
+        <a name="M000150"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000150.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000150.html');return false;">
+          <span class="method-name">get_arc_weight</span><span class="method-args">( inode, walk )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000166" class="method-detail">
+        <a name="M000166"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000166.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000166.html');return false;">
+          <span class="method-name">get_csf</span><span class="method-args">( i )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000159" class="method-detail">
+        <a name="M000159"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000159.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000159.html');return false;">
+          <span class="method-name">get_lower_path_weights</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000165" class="method-detail">
+        <a name="M000165"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000165.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000165.html');return false;">
+          <span class="method-name">get_ncsf</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000139" class="method-detail">
+        <a name="M000139"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000139.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000139.html');return false;">
+          <span class="method-name">get_ncsfs</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000137" class="method-detail">
+        <a name="M000137"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000137.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000137.html');return false;">
+          <span class="method-name">get_nnodes</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000141" class="method-detail">
+        <a name="M000141"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000141.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000141.html');return false;">
+          <span class="method-name">get_norb</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000145" class="method-detail">
+        <a name="M000145"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000145.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000145.html');return false;">
+          <span class="method-name">get_nve</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000143" class="method-detail">
+        <a name="M000143"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000143.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000143.html');return false;">
+          <span class="method-name">get_orb</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000146" class="method-detail">
+        <a name="M000146"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000146.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000146.html');return false;">
+          <span class="method-name">get_spin</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000148" class="method-detail">
+        <a name="M000148"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000148.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000148.html');return false;">
+          <span class="method-name">get_upper_arc</span><span class="method-args">( inode, walk )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000162" class="method-detail">
+        <a name="M000162"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000162.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000162.html');return false;">
+          <span class="method-name">get_upper_path_weights</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000163" class="method-detail">
+        <a name="M000163"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000163.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000163.html');return false;">
+          <span class="method-name">mk_csf_list</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+全 CSF リストの作成 再帰的処理 引数：none、戻り値：none
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000138" class="method-detail">
+        <a name="M000138"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000138.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000138.html');return false;">
+          <span class="method-name">nnode</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000142" class="method-detail">
+        <a name="M000142"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000142.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000142.html');return false;">
+          <span class="method-name">norb</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000140" class="method-detail">
+        <a name="M000140"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000140.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000140.html');return false;">
+          <span class="method-name">r_ncsf</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000151" class="method-detail">
+        <a name="M000151"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000151.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000151.html');return false;">
+          <span class="method-name">r_upperarcw</span><span class="method-args">( inode, walk )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Second_order_CI.html#M000151">r_upperarcw</a>( inode, walk )
+&#8230; weight of next node#
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000149" class="method-detail">
+        <a name="M000149"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000149.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000149.html');return false;">
+          <span class="method-name">r_uppercon</span><span class="method-args">( inode, walk )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Second_order_CI.html#M000149">r_uppercon</a>( inode, walk )
+&#8230; next node# Honda
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000144" class="method-detail">
+        <a name="M000144"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000144.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000144.html');return false;">
+          <span class="method-name">r_upperlevel</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Second_order_CI.html#M000144">r_upperlevel</a>( inode ) &#8230;
+orb# Honda
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000147" class="method-detail">
+        <a name="M000147"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000147.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000147.html');return false;">
+          <span class="method-name">r_upperspin</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Second_order_CI.html#M000147">r_upperspin</a>( inode ) &#8230;
+spin ( 2S + 1 ) Honda
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000157" class="method-detail">
+        <a name="M000157"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000157.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000157.html');return false;">
+          <span class="method-name">set_lower_path_weights</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+bottom から各 node にいたる全ての paths の weights(arc weights
+の和) の配列 再帰的処理 引数：none、戻り値：none
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000160" class="method-detail">
+        <a name="M000160"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000160.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000160.html');return false;">
+          <span class="method-name">set_upper_path_weights</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+各 node から top にいたる全ての paths の weights(arc weights
+の和) の配列 再帰的処理 引数：none、戻り値：none
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000136" class="method-detail">
+        <a name="M000136"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000136.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000136.html');return false;">
+          <span class="method-name">show_drt</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000135" class="method-detail">
+        <a name="M000135"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000135.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000135.html');return false;">
+          <span class="method-name">show_drt_title</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000156" class="method-detail">
+        <a name="M000156"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000156.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000156.html');return false;">
+          <span class="method-name">store_number_lower_arcs</span><span class="method-args">( node )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+各 node の number_lower_arcs の設定 再帰的処理 引数：node
+番号、戻り値： number_lower_arcs 最終 node からの戻り値
+number_upper_arcs が全 csf 数
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000155" class="method-detail">
+        <a name="M000155"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000155.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000155.html');return false;">
+          <span class="method-name">store_number_upper_arcs</span><span class="method-args">( node )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+各 node の number_upper_arcs, arc_weight の設定 再帰的処理
+引数：node 番号、戻り値： number_upper_arcs node = 0
+からの戻り値 number_upper_arcs が全 csf 数
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000164" class="method-detail">
+        <a name="M000164"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000164.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000164.html');return false;">
+          <span class="method-name">tree_search_csf</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000158" class="method-detail">
+        <a name="M000158"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000158.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000158.html');return false;">
+          <span class="method-name">tree_search_lower_path</span><span class="method-args">( inode )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000161" class="method-detail">
+        <a name="M000161"></a>
+
+        <div class="method-heading">
+          <a href="Second_order_CI.src/M000161.html" target="Code" class="method-signature"
+            onclick="popupCode('Second_order_CI.src/M000161.html');return false;">
+          <span class="method-name">tree_search_upper_path</span><span class="method-args">( inode, arr )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

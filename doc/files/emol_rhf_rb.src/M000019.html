@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>rhf (emol_rhf.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_rhf.rb, line 186</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rhf</span>( <span class="ruby-identifier">molinfo</span>, <span class="ruby-identifier">s</span>, <span class="ruby-identifier">h</span>, <span class="ruby-identifier">nz_g</span> )
+
+    <span class="ruby-identifier">nbf</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nbf</span>
+    <span class="ruby-identifier">nel</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nel</span>
+    <span class="ruby-comment cmt">#</span>
+    <span class="ruby-comment cmt"># == 正準直交化 (Sazbo, Sec.3.4.5)</span>
+    <span class="ruby-comment cmt">#</span>
+    <span class="ruby-comment cmt">#   Canonical orbital transformation matrix : tm</span>
+    <span class="ruby-comment cmt">#</span>
+    <span class="ruby-comment cmt"># ===重なり積分の対角化</span>
+    <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv</span>( <span class="ruby-identifier">s</span> )
+    <span class="ruby-comment cmt">#</span>
+    <span class="ruby-comment cmt"># ===値の大きい順にソート</span>
+    <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv_sort</span>( <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">type</span>=<span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-constant">SORT_VAL_DESC</span> )
+    <span class="ruby-comment cmt">#   EmolUtil::print_2dim_ary_tri(s.to_a, &quot;Overlap matrix&quot;, 10, &quot;%12.6f&quot;)</span>
+    <span class="ruby-comment cmt">#   EmolUtil::print_2dim_ary_tri(h.to_a, &quot;Hcore matrix&quot;, 10, &quot;%12.6f&quot;)</span>
+    
+    <span class="ruby-comment cmt"># === EmolConsts::THR_THROWN より小さな値を持つ軌道の数を調べる</span>
+    <span class="ruby-identifier">num_thrown</span> = <span class="ruby-value">0</span>; <span class="ruby-identifier">thrown</span> = <span class="ruby-constant">EmolConsts</span><span class="ruby-operator">::</span><span class="ruby-constant">THR_THROWN</span>
+    <span class="ruby-identifier">eval</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">thrown</span>
+        <span class="ruby-identifier">num_thrown</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># ===対角化した行列を必要分のみのサイズ: eval.size - num_thrown に変更</span>
+    <span class="ruby-identifier">eval</span> = <span class="ruby-identifier">eval</span>.<span class="ruby-identifier">subvector</span>( <span class="ruby-identifier">eval</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">num_thrown</span> )
+    <span class="ruby-identifier">evec</span> = <span class="ruby-identifier">evec</span>.<span class="ruby-identifier">submatrix</span>( <span class="ruby-keyword kw">nil</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">evec</span>.<span class="ruby-identifier">size</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">-</span> <span class="ruby-identifier">num_thrown</span> )
+    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">eval</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+      <span class="ruby-identifier">eval</span>[<span class="ruby-identifier">i</span>] = <span class="ruby-value">1.0</span> <span class="ruby-operator">/</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-identifier">eval</span>[<span class="ruby-identifier">i</span>] )
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># === X = U * s^{-1/2} の計算</span>
+    <span class="ruby-comment cmt">#   EmolUtil::print_2dim_ary_with_value(evec.to_a, eval.to_a, &quot;Rectangular martrix&quot;, 10, &quot;%12.6f&quot;)</span>
+    <span class="ruby-identifier">tm</span> = <span class="ruby-identifier">evec</span> <span class="ruby-operator">*</span> <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">diagonal</span>( <span class="ruby-identifier">eval</span> )
+    <span class="ruby-comment cmt">#                                                                      X = U s^{-1/2}   Eq(3.172)</span>
+    <span class="ruby-comment cmt">#   EmolUtil::print_2dim_ary((tm.transpose * s * tm).to_a, &quot;Check X(T)SX = 1&quot;, 10, &quot;%12.6f&quot;)</span>
+
+    <span class="ruby-comment cmt"># === (X+)*h*X の計算 (Sazbo, Eq.3.172)</span>
+    <span class="ruby-comment cmt">#   make initial guess for mo from core Hamiltonian h</span>
+    <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv</span>( <span class="ruby-identifier">tm</span>.<span class="ruby-identifier">transpose</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">h</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">tm</span> )
+    <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv_sort</span>( <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">type</span>=<span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-constant">SORT_VAL_ASC</span> )
+    <span class="ruby-identifier">cao</span> = <span class="ruby-identifier">tm</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">evec</span>
+    <span class="ruby-comment cmt">#   EmolUtil::print_2dim_ary_with_value_moname(cao.to_a, eval.to_a, molinfo.get_bs_name, &quot;Orbital Energies and MO Coefficients&quot;, 8, &quot;%12.6f&quot;)</span>
+
+    <span class="ruby-comment cmt"># === 密度行列の生成</span>
+    <span class="ruby-identifier">dao</span> = <span class="ruby-constant">Density</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">nel</span><span class="ruby-operator">/</span><span class="ruby-value">2</span>, <span class="ruby-value">2.0</span> )
+<span class="ruby-comment cmt">#</span>
+<span class="ruby-comment cmt">#   scf iteration</span>
+<span class="ruby-comment cmt">#</span>
+    <span class="ruby-identifier">diis</span> = <span class="ruby-constant">DIIS</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">error</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( [<span class="ruby-value">100.0</span>, <span class="ruby-value">100.0</span>] )
+    <span class="ruby-identifier">iter</span> = <span class="ruby-value">-1</span>; <span class="ruby-identifier">g</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;\n  Iter:     Energy                     Error \n&quot;</span>)
+    <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">error</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">error</span>.<span class="ruby-identifier">col</span> <span class="ruby-operator">&gt;</span> <span class="ruby-constant">EmolConsts</span><span class="ruby-operator">::</span><span class="ruby-constant">THR_CONV</span>
+      <span class="ruby-comment cmt"># == 2電子積分と密度行列から2電子フォック行列を計算</span>
+      <span class="ruby-identifier">g</span> = <span class="ruby-identifier">calc_gmat_nz_eris</span>( <span class="ruby-identifier">nz_g</span>, <span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span>, <span class="ruby-identifier">nbf</span> )
+      <span class="ruby-comment cmt"># == 1電子，2電子フォック行列の和</span>
+      <span class="ruby-identifier">f</span> = <span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">g</span>
+      <span class="ruby-identifier">iter</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-comment cmt"># == 全エネルギー計算 (Szabo, Eq.3.184)</span>
+      <span class="ruby-identifier">total_energy</span> = (<span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">f</span>)).<span class="ruby-identifier">trace</span> <span class="ruby-operator">/</span> <span class="ruby-value">2.0</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_e_nucl</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">iter</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   %3d     %20.16e     %20.16e \n&quot;</span>, <span class="ruby-identifier">iter</span>, <span class="ruby-identifier">total_energy</span>, <span class="ruby-identifier">error</span><span class="ruby-operator">*</span><span class="ruby-identifier">error</span>.<span class="ruby-identifier">col</span> )
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   %3d     %20.16e  \n&quot;</span>,            <span class="ruby-identifier">iter</span>, <span class="ruby-identifier">total_energy</span> )
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-comment cmt"># == DIIS 計算</span>
+      <span class="ruby-comment cmt"># === error 行列の計算 (Pulay, JCC_2_1982, Eq.2)</span>
+      <span class="ruby-identifier">fmo</span> = <span class="ruby-identifier">cao</span>.<span class="ruby-identifier">transpose</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">cao</span>
+      <span class="ruby-identifier">err</span> = []
+      <span class="ruby-identifier">nocc</span> = <span class="ruby-identifier">nel</span> <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+      <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">nocc</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">in</span> <span class="ruby-identifier">nocc</span><span class="ruby-operator">..</span><span class="ruby-identifier">nbf</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+          <span class="ruby-identifier">err</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">fmo</span>[<span class="ruby-identifier">i</span>, <span class="ruby-identifier">j</span>] )
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">error</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">err</span> )
+      <span class="ruby-identifier">diis</span>.<span class="ruby-identifier">err_push</span>( <span class="ruby-identifier">error</span> )
+      <span class="ruby-identifier">diis</span>.<span class="ruby-identifier">fock_push</span>( <span class="ruby-identifier">f</span> )
+      <span class="ruby-comment cmt">#</span>
+      <span class="ruby-comment cmt">#     printf(&quot;dmat, gmat, fmat: \n&quot;)</span>
+      <span class="ruby-comment cmt">#     ij = -1</span>
+      <span class="ruby-comment cmt">#     for i in 0..g.size1-1</span>
+      <span class="ruby-comment cmt">#       for j in 0..i</span>
+      <span class="ruby-comment cmt">#         ij += 1</span>
+      <span class="ruby-comment cmt">#         printf(&quot; %5d  %5d  %6d  %20.15e  %20.15e  %20.15e  %20.15e \n&quot;,</span>
+      <span class="ruby-comment cmt">#                j, i, ij, dao.get_body[j,i], h[j,i], g[j,i], f[j,i])</span>
+      <span class="ruby-comment cmt">#       end</span>
+      <span class="ruby-comment cmt">#     end</span>
+      <span class="ruby-comment cmt">#</span>
+
+      <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv</span>( <span class="ruby-identifier">tm</span>.<span class="ruby-identifier">transpose</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">diis</span>.<span class="ruby-identifier">get_averageFock</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">tm</span> )
+      <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv_sort</span>( <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">type</span>=<span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-constant">SORT_VAL_ASC</span> )
+      <span class="ruby-identifier">cao</span> = <span class="ruby-identifier">tm</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">evec</span>
+      <span class="ruby-identifier">dao</span> = <span class="ruby-constant">Density</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">nel</span><span class="ruby-operator">/</span><span class="ruby-value">2</span>, <span class="ruby-value">2.0</span> )
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-comment cmt">#</span>
+  <span class="ruby-comment cmt"># 収束軌道にてフォック行列を計算する</span>
+  <span class="ruby-identifier">g</span> = <span class="ruby-identifier">calc_gmat_nz_eris</span>( <span class="ruby-identifier">nz_g</span>, <span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span>, <span class="ruby-identifier">nbf</span> )
+  <span class="ruby-identifier">f</span> = <span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">g</span>
+  <span class="ruby-comment cmt"># 最終全エネルギー計算</span>
+  <span class="ruby-identifier">total_energy</span> = (<span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">f</span>)).<span class="ruby-identifier">trace</span> <span class="ruby-operator">/</span> <span class="ruby-value">2.0</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_e_nucl</span>
+<span class="ruby-comment cmt">#</span>
+  <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_2dim_ary_with_value_moname</span>(<span class="ruby-identifier">cao</span>.<span class="ruby-identifier">submatrix</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nocc</span>).<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">eval</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_bs_name</span>, 
+             <span class="ruby-value str">&quot;Occupied Orbital Energies and MO Coefficients&quot;</span>, <span class="ruby-value">8</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span>)
+<span class="ruby-comment cmt"># EmolUtil::print_2dim_ary_with_value_moname(cao.to_a, eval.to_a, molinfo.get_bs_name, </span>
+<span class="ruby-comment cmt">#            &quot;Orbital Energies and MO Coefficients&quot;, 8, &quot;%12.6f&quot;)</span>
+
+  <span class="ruby-comment cmt"># 全エネルギー，フォック行列，電子フォック行列，係数行列，密度行列データ，Xs^{-1/2}</span>
+  <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">total_energy</span>, <span class="ruby-identifier">f</span>, <span class="ruby-identifier">g</span>, <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span>, <span class="ruby-identifier">tm</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

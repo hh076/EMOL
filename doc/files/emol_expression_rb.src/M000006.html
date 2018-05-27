@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>matrix_el (emol_expression.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 163</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix_el</span>( <span class="ruby-identifier">gf</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">ff</span> )
+    <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">0</span>
+
+<span class="ruby-comment cmt">#    p 'gf', gf</span>
+<span class="ruby-comment cmt">#    p 'hf', hf</span>
+<span class="ruby-comment cmt">#    p 'ff', ff</span>
+<span class="ruby-comment cmt">#    p 'FULL', FULL</span>
+<span class="ruby-comment cmt">#    p 'EMPTY', EMPTY</span>
+<span class="ruby-comment cmt">#    p 'CAS', CAS</span>
+<span class="ruby-comment cmt">#    p 'CAT', CAT</span>
+
+    <span class="ruby-keyword kw">begin</span>
+        <span class="ruby-comment cmt">#WHEN ( GF = EMPTY &amp; FF = EMPTY )                                         </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( UNITY ) RTN_VAL = 1 ;              /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UNITY</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ACS</span> <span class="ruby-keyword kw">then</span>                     <span class="ruby-comment cmt"># added by honda</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">-</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-value">2</span>)
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( ( GF = UP ! GF = DOWN ) &amp; ( FF = UP ! FF = DOWN ) )               </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( UNITY ) RTN_VAL = SQRT ( TWO ) ;   /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CAS   ) RTN_VAL = - 1 ;            /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CAT   ) RTN_VAL = SQRT ( THREE ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UNITY</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CAS</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">-1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ACS</span> <span class="ruby-keyword kw">then</span>                     <span class="ruby-comment cmt"># added by honda</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">-1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CAT</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">THREE</span> )
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ACT</span> <span class="ruby-keyword kw">then</span>                     <span class="ruby-comment cmt"># added by honda</span>
+<span class="ruby-comment cmt">#               rtn_val = - Math.sqrt( THREE )</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">THREE</span> )       <span class="ruby-comment cmt"># tashi</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( GF = FULL  &amp; FF = FULL )                                         </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( UNITY ) RTN_VAL = 1 ;              /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CAS   ) RTN_VAL = - SQRT ( TWO ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CAT   ) RTN_VAL = 0 ;              /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/             </span>
+        <span class="ruby-comment cmt">#   WHEN ( CCAA  ) RTN_VAL = 1 ;              /* not used */              </span>
+        <span class="ruby-comment cmt">#   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/             </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UNITY</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CAS</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">-</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )
+                <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">rtn_val</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CAT</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">0</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CCAA</span> <span class="ruby-keyword kw">then</span>          <span class="ruby-comment cmt"># not used</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( GF = EMPTY &amp; ( FF = UP ! FF = DOWN ) )                            </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( A     ) RTN_VAL = + SQRT ( TWO ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#/* WHEN ( A     ) RTN_VAL = - SQRT ( TWO ) */                            </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">A</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )
+            <span class="ruby-comment cmt">###if hf == A then</span>
+            <span class="ruby-comment cmt">### rtn_val = - Math.sqrt( TWO )</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( FF = EMPTY &amp; ( GF = UP ! GF = DOWN ) )                            </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( C     ) RTN_VAL = + SQRT ( TWO ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">C</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( FF = FULL  &amp; ( GF = UP ! GF = DOWN ) )                            </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#/* WHEN ( A     ) RTN_VAL = + SQRT ( TWO ) */                            </span>
+        <span class="ruby-comment cmt">#   WHEN ( A     ) RTN_VAL = - SQRT ( TWO ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CAA   ) RTN_VAL = - 1 ;      /* C * AAS / 2  */                </span>
+        <span class="ruby-comment cmt"># /*            01-04   by SAS at HUCC    Sep.   6, 1984  */         </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                   /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">A</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )               <span class="ruby-comment cmt">### noro/sas before 84-09-03 phase  (14-08-23)</span>
+            <span class="ruby-comment cmt">### rtn_val = - Math.sqrt( TWO )               ### sas after 84-09-03 phase        (14-08-23)</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CAA</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">-</span> <span class="ruby-value">1</span>                 <span class="ruby-comment cmt">### C * AAS / 2</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( GF = FULL  &amp; ( FF = UP ! FF = DOWN ) )                            </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( C     ) RTN_VAL = + SQRT ( TWO ) ; /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   WHEN ( CCA   ) RTN_VAL = + 1 ;      /* CCS * A / 2  */                </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                   /* 84-09-03 */              </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">UP</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DOWN</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">C</span> <span class="ruby-keyword kw">then</span>
+<span class="ruby-comment cmt">#               rtn_val = + Math.sqrt( TWO )   #### tashi 2014-11-15</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">-</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CCA</span> <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-value">1</span>                 <span class="ruby-comment cmt">### CCS * A / 2</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( GF = EMPTY &amp; FF = FULL  )                                         </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( AAS   ) RTN_VAL = - ONE / SQRT ( TWO ) ;                       </span>
+        <span class="ruby-comment cmt"># /*               01-04   by SAS at HUCC    Sep.   6, 1984  */         </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">AAS</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-comment cmt">### rtn_val = - ONE / Math.sqrt( TWO )         ### kamuy value (14-08-23)</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )               <span class="ruby-comment cmt">### modified    (14-08-23)</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#WHEN ( GF = FULL  &amp; FF = EMPTY )                                         </span>
+        <span class="ruby-comment cmt">#   SELECT ( HF ) ;                                                       </span>
+        <span class="ruby-comment cmt">#   WHEN ( CCS   ) RTN_VAL = + ONE / SQRT ( TWO ) ;                       </span>
+        <span class="ruby-comment cmt"># /*               01-04   by SAS at HUCC    Sep.   6, 1984  */         </span>
+        <span class="ruby-comment cmt">#   OTHER ;                                                               </span>
+        <span class="ruby-comment cmt">#   END ;                                                                 </span>
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">gf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FULL</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">ff</span> <span class="ruby-operator">==</span> <span class="ruby-constant">EMPTY</span> ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hf</span> <span class="ruby-operator">==</span> <span class="ruby-constant">CCS</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-comment cmt">### rtn_val = + ONE / Math.sqrt( TWO )</span>
+                <span class="ruby-identifier">rtn_val</span> = <span class="ruby-operator">+</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>( <span class="ruby-constant">TWO</span> )               <span class="ruby-comment cmt">### modified (14-08-23)</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidCombination</span>
+            <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-comment cmt">#OTHER  PUT SKIP LIST                                                     </span>
+        <span class="ruby-comment cmt">#   ('INVALID COMBINATION OF GF AND HF IN HMLSET ' ) ;                    </span>
+        <span class="ruby-comment cmt">#END ;                                                                    </span>
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">InvalidCombination</span>
+        <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;INVALID COMBINATION OF GF AND HF IN HMLSET : gf,hf,ff = %s %s %s\n&quot;</span>,
+                        <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">gf</span>], <span class="ruby-constant">TBL_OPSTR</span>[<span class="ruby-identifier">hf</span>], <span class="ruby-constant">TBL_WFSTR</span>[<span class="ruby-identifier">ff</span>] )
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">rtn_val</span>
+
+    <span class="ruby-comment cmt">#IF @@SUB@ &gt;= 4 THEN PUT SKIP DATA ( RTN_VAL ) ;                             </span>
+    <span class="ruby-comment cmt">#RETURN ( RTN_VAL ) ;                                                        </span>
+    <span class="ruby-comment cmt">#END MATRIX_EL ;                                                             </span>
+    <span class="ruby-comment cmt">#                                                                            </span>
+    <span class="ruby-comment cmt">#%  INCLUDE  ERRSUB ;                                                        </span>
+    <span class="ruby-comment cmt">#END @SUB@ ;                                                                 </span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

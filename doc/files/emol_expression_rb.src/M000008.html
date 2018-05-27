@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tree_search (emol_expression.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 499</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tree_search</span>( <span class="ruby-identifier">drt</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">walk</span>, <span class="ruby-identifier">k</span>, <span class="ruby-identifier">ng</span>, <span class="ruby-identifier">nf</span>, <span class="ruby-identifier">wg</span>, <span class="ruby-identifier">wf</span>, 
+                 <span class="ruby-identifier">iop</span>, <span class="ruby-identifier">h_op</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">mk</span>, <span class="ruby-identifier">ijkl</span>, <span class="ruby-identifier">origin</span>, <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">record</span> ) 
+
+    <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;===&gt; tree_search \n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;     k = &quot;</span>, <span class="ruby-identifier">k</span>, <span class="ruby-value str">&quot; iop = &quot;</span>, <span class="ruby-identifier">iop</span>, <span class="ruby-value str">&quot;\n&quot;</span> 
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;     ng, nf : &quot;</span>, <span class="ruby-identifier">ng</span>, <span class="ruby-value str">&quot;,  &quot;</span>, <span class="ruby-identifier">nf</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">next_ng</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_uppercon</span>( <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">walk</span>[ <span class="ruby-value">0</span> ] <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+    <span class="ruby-identifier">next_nf</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_uppercon</span>( <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">walk</span>[ <span class="ruby-value">1</span> ] <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+    <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;;    next_ng, nf : &quot;</span>, <span class="ruby-identifier">next_ng</span>, <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-identifier">next_nf</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;;    hf : &quot;</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">num_ca</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_ng</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">next_nf</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-identifier">k</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+        <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">next_ng</span>
+        <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">next_nf</span>
+        <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> <span class="ruby-value">-1</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperarcw</span>( <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ], <span class="ruby-identifier">walk</span>[ <span class="ruby-value">0</span> ] <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+        <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> <span class="ruby-value">-1</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperarcw</span>( <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ], <span class="ruby-identifier">walk</span>[ <span class="ruby-value">1</span> ] <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+        <span class="ruby-identifier">num_ca</span> = <span class="ruby-constant">Num_ca</span>[ <span class="ruby-identifier">hf</span> ]
+        <span class="ruby-identifier">num_ca</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">ijkl</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">k</span> )
+        <span class="ruby-keyword kw">end</span> 
+        <span class="ruby-identifier">psi</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperspin</span>( <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ] ); <span class="ruby-identifier">phi</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperspin</span>( <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> ] )
+        <span class="ruby-identifier">mk</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">mk</span>[ <span class="ruby-identifier">k</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">hmlkva</span>( <span class="ruby-identifier">walk</span>[ <span class="ruby-value">0</span> ], <span class="ruby-identifier">walk</span>[ <span class="ruby-value">1</span> ], <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">psi</span>, <span class="ruby-identifier">phi</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span> )
+
+        <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;     g, f : &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">walk</span>[<span class="ruby-value">0</span>]], <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">walk</span>[<span class="ruby-value">1</span>]]
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    hf : &quot;</span>, <span class="ruby-identifier">hf</span>
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    psi, phi : &quot;</span>, <span class="ruby-identifier">psi</span>, <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-identifier">phi</span>
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    theta, theta_prev : &quot;</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-identifier">theta_prev</span>, <span class="ruby-value str">&quot;\n&quot;</span>
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;     mk_value = &quot;</span>, <span class="ruby-identifier">mk</span>[<span class="ruby-identifier">k</span>], <span class="ruby-value str">&quot;\n \n&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">mk</span>[ <span class="ruby-identifier">k</span> ].<span class="ruby-identifier">abs</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Thresh_zero</span> 
+            <span class="ruby-identifier">k</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+            <span class="ruby-identifier">num_ca</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">ijkl</span>.<span class="ruby-identifier">pop</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+                <span class="ruby-identifier">p</span> <span class="ruby-value str">&quot;&lt;=== tree_search&quot;</span> 
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">return</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">iop</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">lenop</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ]  <span class="ruby-operator">==</span> <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ]
+                <span class="ruby-identifier">key</span> = [ <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">ijkl</span> ].<span class="ruby-identifier">flatten</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">key</span> = [ <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">ijkl</span> ].<span class="ruby-identifier">flatten</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">record</span>.<span class="ruby-identifier">key?</span>( <span class="ruby-identifier">key</span> )
+                <span class="ruby-identifier">tmp</span> = <span class="ruby-constant">LoopElement</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">ijkl</span>, <span class="ruby-identifier">mk</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">origin</span> )
+                <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">tmp</span> )
+                <span class="ruby-identifier">record</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">key</span>, <span class="ruby-keyword kw">true</span> )
+                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Debug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;Loop closed \n&quot;</span>
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;g = &quot;</span>
+                    (<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">k</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">it</span><span class="ruby-operator">|</span>
+                         <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; %3d &quot;</span>, <span class="ruby-identifier">ng</span>[<span class="ruby-identifier">it</span>] )
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\nf = &quot;</span>
+                    (<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">k</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">it</span><span class="ruby-operator">|</span>
+                         <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; %3d &quot;</span>, <span class="ruby-identifier">nf</span>[<span class="ruby-identifier">it</span>] )
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+                    <span class="ruby-identifier">tmp</span>.<span class="ruby-identifier">show</span>
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ng</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">lenop</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">iop</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    UNITY \n&quot;</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">hf</span> = <span class="ruby-constant">UNITY</span>
+                <span class="ruby-identifier">theta</span> = <span class="ruby-identifier">theta</span>
+                <span class="ruby-identifier">theta_prev</span> = <span class="ruby-identifier">theta</span>
+                <span class="ruby-constant">Seg_walk</span>[<span class="ruby-constant">UNITY</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">wk</span><span class="ruby-operator">|</span>
+                    <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+                        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    walk : &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">wk</span>[<span class="ruby-value">0</span>]], <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">wk</span>[<span class="ruby-value">1</span>]], <span class="ruby-value str">&quot;\n&quot;</span>
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-identifier">tree_search</span>( <span class="ruby-identifier">drt</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">wk</span>, <span class="ruby-identifier">k</span>, <span class="ruby-identifier">ng</span>, <span class="ruby-identifier">nf</span>, <span class="ruby-identifier">wg</span>, <span class="ruby-identifier">wf</span>, 
+                                 <span class="ruby-identifier">iop</span>, <span class="ruby-identifier">h_op</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">mk</span>, <span class="ruby-identifier">ijkl</span>, <span class="ruby-identifier">origin</span>, <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">record</span> ) 
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">lenop</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">iop</span>
+                <span class="ruby-identifier">iop</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+                <span class="ruby-identifier">hf</span> = <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">op</span>( <span class="ruby-identifier">iop</span> )
+                <span class="ruby-identifier">theta_prev</span> = <span class="ruby-identifier">theta</span>
+                <span class="ruby-identifier">theta</span> = <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">theta</span>( <span class="ruby-identifier">iop</span> )
+                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+                    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    Next Operator &quot;</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-value str">&quot;\n&quot;</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-constant">Seg_walk</span>[ <span class="ruby-identifier">hf</span> ].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">wk</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+                        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    walk : &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">wk</span>[<span class="ruby-value">0</span>]], <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">wk</span>[<span class="ruby-value">1</span>]], <span class="ruby-value str">&quot;\n&quot;</span>
+                <span class="ruby-keyword kw">end</span>
+                     <span class="ruby-identifier">tree_search</span>( <span class="ruby-identifier">drt</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">wk</span>, <span class="ruby-identifier">k</span>, <span class="ruby-identifier">ng</span>, <span class="ruby-identifier">nf</span>, <span class="ruby-identifier">wg</span>, <span class="ruby-identifier">wf</span>, 
+                                 <span class="ruby-identifier">iop</span>, <span class="ruby-identifier">h_op</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">mk</span>, <span class="ruby-identifier">ijkl</span>, <span class="ruby-identifier">origin</span>, <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">record</span> ) 
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">iop</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">k</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">num_ca</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">ijkl</span>.<span class="ruby-identifier">pop</span>
+    <span class="ruby-keyword kw">end</span> 
+    <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DebugDebug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>    
+        <span class="ruby-identifier">p</span> <span class="ruby-value str">&quot;&lt;=== tree_search&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">return</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

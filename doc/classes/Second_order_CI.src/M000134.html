@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Second_order_CI)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File drt_soci.rb, line 136</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">_nve</span>, <span class="ruby-identifier">_is</span>, <span class="ruby-identifier">_ncore</span>, <span class="ruby-identifier">_nval</span>, <span class="ruby-identifier">_next</span> )
+    <span class="ruby-identifier">$Info</span> = <span class="ruby-constant">StateInfo</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">_nve</span>, <span class="ruby-identifier">_is</span>)
+    <span class="ruby-identifier">$mo</span> = <span class="ruby-constant">MO_classification</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">_ncore</span>, <span class="ruby-identifier">_nval</span>, <span class="ruby-identifier">_next</span> )
+
+    <span class="ruby-identifier">h_nodes</span> = {}
+    <span class="ruby-identifier">generate_core_node</span>( <span class="ruby-identifier">h_nodes</span> )
+<span class="ruby-comment cmt">#              core_nodes の k = ncore を抜き出す。ncore = 0 では、bottom</span>
+<span class="ruby-comment cmt">#              node を格納</span>
+    <span class="ruby-identifier">nodes_core_last</span> = {}
+    <span class="ruby-identifier">h_nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> <span class="ruby-operator">|</span>
+<span class="ruby-comment cmt">#    h_nodes.sort.each do | k, node |</span>
+<span class="ruby-comment cmt">#      printf(&quot; %s &quot;, k) </span>
+<span class="ruby-comment cmt">#      node.show</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">core_range</span>.<span class="ruby-identifier">last</span>
+        <span class="ruby-identifier">nodes_core_last</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> )
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+ 
+    <span class="ruby-identifier">generate_external_node</span>( <span class="ruby-identifier">h_nodes</span> )
+<span class="ruby-comment cmt">#              ext_nodes の k = ncore + nval + 1 を抜き出す。next = 0 では、top</span>
+<span class="ruby-comment cmt">#              node を格納</span>
+    <span class="ruby-identifier">nodes_ext_first</span> = {}
+    <span class="ruby-identifier">h_nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> <span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">next</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">k</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">ext_range</span>.<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">nodes_ext_first</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> )
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">next</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">k</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">ext_range</span>.<span class="ruby-identifier">last</span>
+        <span class="ruby-identifier">nodes_ext_first</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> )
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+<span class="ruby-comment cmt">#              core_nodes の最終断面から出発して ext_nodes の第一断面に到達する valence 領域の</span>
+<span class="ruby-comment cmt">#              nodes の生成</span>
+    <span class="ruby-identifier">nodes_core_last</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>, <span class="ruby-identifier">node</span> <span class="ruby-operator">|</span>
+      <span class="ruby-identifier">generate_valence_node</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span>, <span class="ruby-identifier">nodes_ext_first</span>, <span class="ruby-identifier">h_nodes</span>)
+      <span class="ruby-identifier">generate_valence_node</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">nodes_ext_first</span>, <span class="ruby-identifier">h_nodes</span>)
+      <span class="ruby-identifier">generate_valence_node</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>, <span class="ruby-identifier">nodes_ext_first</span>, <span class="ruby-identifier">h_nodes</span>)
+      <span class="ruby-identifier">generate_valence_node</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span><span class="ruby-operator">+</span><span class="ruby-value">2</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span>, <span class="ruby-identifier">nodes_ext_first</span>, <span class="ruby-identifier">h_nodes</span>)
+    <span class="ruby-keyword kw">end</span>
+
+<span class="ruby-comment cmt">#              h_nodes ( unordered hash ) =&gt; nodes ( ordered array )</span>
+<span class="ruby-comment cmt">#              生成した全ノードから不正ノードを消去したうえで、整列化して配列 @nodes を生成</span>
+    <span class="ruby-identifier">h_nodes</span>.<span class="ruby-identifier">delete_if</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">false</span>}
+    <span class="ruby-identifier">tmp</span> = <span class="ruby-identifier">h_nodes</span>.<span class="ruby-identifier">values</span>
+    <span class="ruby-ivar">@nodes</span> = <span class="ruby-identifier">tmp</span>.<span class="ruby-identifier">sort</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">code</span>} 
+
+<span class="ruby-comment cmt">#   各ノードの upper_arc の設定</span>
+<span class="ruby-comment cmt">#              { [ orb, nel, is ] =&gt; number } ハッシュ作成</span>
+    <span class="ruby-identifier">code2num</span> = {}
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">node</span>, <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+      <span class="ruby-identifier">code2num</span>.<span class="ruby-identifier">store</span>( <span class="ruby-identifier">node</span>.<span class="ruby-identifier">code</span>, <span class="ruby-identifier">i</span> )
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">node</span>, <span class="ruby-identifier">inode</span> <span class="ruby-operator">|</span>
+      <span class="ruby-identifier">empty</span> = <span class="ruby-identifier">code2num</span>[ [<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span>] ]
+      <span class="ruby-identifier">up</span>    = <span class="ruby-identifier">code2num</span>[ [<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>] ]
+      <span class="ruby-identifier">down</span>  = <span class="ruby-identifier">code2num</span>[ [<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>] ]
+      <span class="ruby-identifier">full</span>  = <span class="ruby-identifier">code2num</span>[ [<span class="ruby-identifier">node</span>.<span class="ruby-identifier">orb</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">nve</span> <span class="ruby-operator">+</span> <span class="ruby-value">2</span>, <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is</span>] ]
+      <span class="ruby-identifier">node</span>.<span class="ruby-identifier">set_upper_arc</span>( [<span class="ruby-identifier">empty</span>, <span class="ruby-identifier">up</span>, <span class="ruby-identifier">down</span>, <span class="ruby-identifier">full</span>] )
+
+      [<span class="ruby-identifier">empty</span>, <span class="ruby-identifier">up</span>, <span class="ruby-identifier">down</span>, <span class="ruby-identifier">full</span>].<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">jnode</span>, <span class="ruby-identifier">j</span> <span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">jnode</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+          <span class="ruby-ivar">@nodes</span>[ <span class="ruby-identifier">jnode</span> ].<span class="ruby-identifier">set_lower_arc</span>( <span class="ruby-identifier">j</span>, <span class="ruby-identifier">inode</span> ) 
+        <span class="ruby-keyword kw">end</span> 
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#            各ノードの number_upper_arcs の設定, 再帰的処理</span>
+    <span class="ruby-identifier">num_upper_arcs</span> = <span class="ruby-identifier">store_number_upper_arcs</span>( <span class="ruby-value">0</span> )
+    <span class="ruby-identifier">num_lower_arcs</span> = <span class="ruby-identifier">store_number_lower_arcs</span>( <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+    <span class="ruby-identifier">set_lower_path_weights</span>
+    <span class="ruby-identifier">set_upper_path_weights</span>
+<span class="ruby-comment cmt">#</span>
+    <span class="ruby-identifier">show_drt</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

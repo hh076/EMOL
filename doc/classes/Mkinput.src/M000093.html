@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Mkinput)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_rexml.rb, line 135</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">inp</span>)
+    <span class="ruby-comment cmt">#atomic_charge = {&quot;H&quot; =&gt; 1, &quot;C&quot; =&gt; 6, &quot;N&quot; =&gt; 7, &quot;O&quot; =&gt; 8}</span>
+    <span class="ruby-identifier">atomic_charge</span> = { <span class="ruby-value str">&quot;H&quot;</span>  =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">1</span>,
+                      <span class="ruby-value str">&quot;He&quot;</span> =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">2</span>, <span class="ruby-value str">&quot;HE&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>,
+                      <span class="ruby-value str">&quot;Li&quot;</span> =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">3</span>, <span class="ruby-value str">&quot;LI&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">3</span>,
+                      <span class="ruby-value str">&quot;B&quot;</span>  =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">4</span>, <span class="ruby-value str">&quot;N&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-value">5</span>, <span class="ruby-value str">&quot;C&quot;</span>  =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">6</span>, <span class="ruby-value str">&quot;N&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-value">7</span>, <span class="ruby-value str">&quot;O&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-value">8</span>,
+                      <span class="ruby-value str">&quot;F&quot;</span> =<span class="ruby-operator">&gt;</span>  <span class="ruby-value">9</span>, 
+                      <span class="ruby-value str">&quot;Ne&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;NE&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">10</span> }
+    <span class="ruby-identifier">l_name</span> = [ [<span class="ruby-value str">&quot;S&quot;</span>], [<span class="ruby-value str">&quot;X&quot;</span>, <span class="ruby-value str">&quot;Y&quot;</span>, <span class="ruby-value str">&quot;Z&quot;</span>], [<span class="ruby-value str">&quot;XX&quot;</span>, <span class="ruby-value str">&quot;YY&quot;</span>, <span class="ruby-value str">&quot;ZZ&quot;</span>, <span class="ruby-value str">&quot;XY&quot;</span>, <span class="ruby-value str">&quot;XZ&quot;</span>, <span class="ruby-value str">&quot;YZ&quot;</span>], [<span class="ruby-value str">&quot;XXX&quot;</span>, <span class="ruby-value str">&quot;YYY&quot;</span>, <span class="ruby-value str">&quot;ZZZ&quot;</span>, <span class="ruby-value str">&quot;XXY&quot;</span>, <span class="ruby-value str">&quot;XXZ&quot;</span>, <span class="ruby-value str">&quot;XYY&quot;</span>, <span class="ruby-value str">&quot;YYZ&quot;</span>, <span class="ruby-value str">&quot;XZZ&quot;</span>, <span class="ruby-value str">&quot;YZZ&quot;</span>, <span class="ruby-value str">&quot;XYZ&quot;</span> ] ] 
+    <span class="ruby-identifier">l_degeneracy</span> = [<span class="ruby-value">1</span>, <span class="ruby-value">3</span>, <span class="ruby-value">6</span>, <span class="ruby-value">10</span>, <span class="ruby-value">15</span>, <span class="ruby-value">21</span>, <span class="ruby-value">28</span>]
+    <span class="ruby-ivar">@numb_shell</span> = <span class="ruby-value">0</span>; <span class="ruby-ivar">@numb_prim</span> = <span class="ruby-value">0</span>; <span class="ruby-ivar">@numb_atm</span> = <span class="ruby-value">0</span>
+    <span class="ruby-ivar">@shel_lqn</span> = []; <span class="ruby-ivar">@shel_atm</span> = []; <span class="ruby-ivar">@shel_tem</span> = []; <span class="ruby-ivar">@shel_add</span> = []; <span class="ruby-ivar">@shel_ini</span> = []
+    <span class="ruby-ivar">@atom_charg</span> = []; <span class="ruby-ivar">@atom_xyz</span> = []
+    <span class="ruby-ivar">@prim_exp</span> = []; <span class="ruby-ivar">@prim_coe</span> = []
+
+    <span class="ruby-comment cmt">########################################################################</span>
+    <span class="ruby-identifier">nl</span> = <span class="ruby-constant">SimpleNameList</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">inp</span> )
+    <span class="ruby-identifier">items</span> = <span class="ruby-identifier">nl</span>.<span class="ruby-identifier">parse</span>
+
+    <span class="ruby-comment cmt">########################################################################</span>
+    <span class="ruby-ivar">@flg_int</span>      = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;runflg&quot;</span> ][ <span class="ruby-value str">&quot;int&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@flg_rhf</span>      = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;runflg&quot;</span> ][ <span class="ruby-value str">&quot;rhf&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@flg_trn</span>      = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;runflg&quot;</span> ][ <span class="ruby-value str">&quot;trn&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@flg_expr</span>     = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;runflg&quot;</span> ][ <span class="ruby-value str">&quot;expr&quot;</span>  ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@flg_ci</span>       = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;runflg&quot;</span> ][ <span class="ruby-value str">&quot;ci&quot;</span>    ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+
+    <span class="ruby-ivar">@charge</span>       = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;mol&quot;</span> ][ <span class="ruby-value str">&quot;charge&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_f</span>
+    <span class="ruby-identifier">name_basis</span>    = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;mol&quot;</span> ][ <span class="ruby-value str">&quot;basis&quot;</span>    ][ <span class="ruby-value">0</span> ]
+    <span class="ruby-identifier">atom_and_xyz</span>  = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;mol&quot;</span> ][ <span class="ruby-value str">&quot;atom_xyz&quot;</span> ]
+    <span class="ruby-ivar">@numb_atm</span>     = <span class="ruby-identifier">atom_and_xyz</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">/</span> <span class="ruby-value">4</span>
+
+    <span class="ruby-ivar">@spin</span>         = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;spin&quot;</span>     ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@n_frozen</span>     = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;fzcore&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@n_core</span>       = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;core&quot;</span>     ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@n_active</span>     = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;active&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@n_external</span>   = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;external&quot;</span> ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-ivar">@nstate</span>       = <span class="ruby-identifier">items</span>[ <span class="ruby-value str">&quot;ci&quot;</span>  ][ <span class="ruby-value str">&quot;nstate&quot;</span>   ][ <span class="ruby-value">0</span> ].<span class="ruby-identifier">to_i</span>
+
+    <span class="ruby-comment cmt">########################################################################</span>
+    <span class="ruby-ivar">@atom_name</span> = []
+    <span class="ruby-ivar">@atom_charg</span> = []
+    <span class="ruby-ivar">@atom_xyz</span> = []
+    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@numb_atm</span>
+        <span class="ruby-ivar">@atom_name</span>    <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">atom_and_xyz</span>[ <span class="ruby-identifier">i</span> <span class="ruby-operator">*</span> <span class="ruby-value">4</span> ]
+        <span class="ruby-ivar">@atom_charg</span>   <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">atomic_charge</span>[ <span class="ruby-ivar">@atom_name</span>[ <span class="ruby-identifier">i</span> ] ]
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">ixyz</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-value">3</span>
+            <span class="ruby-ivar">@atom_xyz</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">atom_and_xyz</span>[ <span class="ruby-identifier">i</span> <span class="ruby-operator">*</span> <span class="ruby-value">4</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">ixyz</span> ].<span class="ruby-identifier">to_f</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt">########################################################################</span>
+    <span class="ruby-identifier">add</span> = <span class="ruby-value">0</span>; <span class="ruby-identifier">ini</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">iatom</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@numb_atm</span>
+      <span class="ruby-identifier">basis_set</span> = <span class="ruby-identifier">read_basis_set</span>(<span class="ruby-identifier">name_basis</span>, <span class="ruby-ivar">@atom_name</span>[ <span class="ruby-identifier">iatom</span> ]).<span class="ruby-identifier">get_body</span>
+      <span class="ruby-identifier">basis_set</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">bf</span><span class="ruby-operator">|</span>
+        <span class="ruby-ivar">@shel_lqn</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_l</span>)
+        <span class="ruby-ivar">@shel_atm</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">iatom</span>)
+        <span class="ruby-ivar">@shel_tem</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_nterm</span>)
+        <span class="ruby-ivar">@shel_add</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">add</span>); <span class="ruby-identifier">add</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_nterm</span>
+        <span class="ruby-ivar">@shel_ini</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">ini</span>); <span class="ruby-identifier">ini</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">l_degeneracy</span>[<span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_l</span>]
+        <span class="ruby-identifier">exp</span> = <span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_zeta</span>; <span class="ruby-identifier">coe</span> = <span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_coef_unnormalized_gtf</span>(<span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_l</span>)
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">bf</span>.<span class="ruby-identifier">get_nterm</span>
+          <span class="ruby-ivar">@prim_exp</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">exp</span>[<span class="ruby-identifier">i</span>])
+          <span class="ruby-ivar">@prim_coe</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">coe</span>[<span class="ruby-identifier">i</span>])
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt">########################################################################</span>
+<span class="ruby-comment cmt">#    f = open(inp)</span>
+<span class="ruby-comment cmt">#    line = f.gets.chomp; puts &quot;&lt;input data&gt;&quot;;  puts &quot;&gt; &quot; + line</span>
+<span class="ruby-comment cmt">#    line = line.split</span>
+<span class="ruby-comment cmt">#    @charge = line[0].to_f</span>
+<span class="ruby-comment cmt">#    @spin = line[1].to_i</span>
+<span class="ruby-comment cmt">#    line = f.gets.chomp; puts &quot;&lt;input data&gt;&quot;;  puts &quot;&gt; &quot; + line</span>
+<span class="ruby-comment cmt">#    line = line.split</span>
+<span class="ruby-comment cmt">#    @n_frozen = line[0].to_i</span>
+<span class="ruby-comment cmt">#    @n_core = line[1].to_i</span>
+<span class="ruby-comment cmt">#    @n_active = line[2].to_i</span>
+<span class="ruby-comment cmt">#    @n_external = line[3].to_i</span>
+<span class="ruby-comment cmt">#    line = f.gets;  puts &quot;&gt; &quot; + line;  printf(&quot;\n&quot;)</span>
+<span class="ruby-comment cmt">#    basis = line.chomp</span>
+<span class="ruby-comment cmt">#</span>
+<span class="ruby-comment cmt">#    add = 0; ini = 0</span>
+<span class="ruby-comment cmt">#    @atom_name = []</span>
+<span class="ruby-comment cmt">#    while line = f.gets</span>
+<span class="ruby-comment cmt">#      atom = line.split[0]</span>
+<span class="ruby-comment cmt">#      @atom_name.push( atom )</span>
+<span class="ruby-comment cmt">#      @numb_atm += 1; @atom_charg.push(atomic_charge[atom].to_f)</span>
+<span class="ruby-comment cmt">#      @atom_xyz.push(line.split[1].to_f) </span>
+<span class="ruby-comment cmt">#      @atom_xyz.push(line.split[2].to_f)</span>
+<span class="ruby-comment cmt">#      @atom_xyz.push(line.split[3].to_f)</span>
+<span class="ruby-comment cmt">#</span>
+<span class="ruby-comment cmt">#      basis_set = read_basis_set(name_basis, atom).get_body</span>
+<span class="ruby-comment cmt">#      basis_set.each do |bf|</span>
+<span class="ruby-comment cmt">#        @shel_lqn.push(bf.get_l)</span>
+<span class="ruby-comment cmt">#        @shel_atm.push(@numb_atm - 1)</span>
+<span class="ruby-comment cmt">#        @shel_tem.push(bf.get_nterm)</span>
+<span class="ruby-comment cmt">#        @shel_add.push(add); add += bf.get_nterm</span>
+<span class="ruby-comment cmt">#        @shel_ini.push(ini); ini += l_degeneracy[bf.get_l]</span>
+<span class="ruby-comment cmt">#        exp = bf.get_zeta; coe = bf.get_coef_unnormalized_gtf(bf.get_l)</span>
+<span class="ruby-comment cmt">#        for i in 0..bf.get_nterm-1</span>
+<span class="ruby-comment cmt">#          @prim_exp.push(exp[i])</span>
+<span class="ruby-comment cmt">#          @prim_coe.push(coe[i])</span>
+<span class="ruby-comment cmt">#        end</span>
+<span class="ruby-comment cmt">#      end</span>
+<span class="ruby-comment cmt">#    end</span>
+    <span class="ruby-comment cmt">########################################################################</span>
+
+    <span class="ruby-ivar">@bs_name</span> = []
+    <span class="ruby-ivar">@shel_lqn</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">lqn</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">atom</span> = <span class="ruby-ivar">@shel_atm</span>[<span class="ruby-identifier">i</span>]
+            <span class="ruby-identifier">l_name</span>[ <span class="ruby-identifier">lqn</span> ].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">xyz</span> <span class="ruby-operator">|</span>
+               <span class="ruby-ivar">@bs_name</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@atom_name</span>[ <span class="ruby-identifier">atom</span> ] <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> (<span class="ruby-ivar">@shel_atm</span>[ <span class="ruby-identifier">i</span> ] <span class="ruby-operator">+</span> <span class="ruby-value">1</span>).<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">xyz</span> ) 
+            <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-ivar">@numb_shell</span> = <span class="ruby-ivar">@shel_lqn</span>.<span class="ruby-identifier">size</span>
+    <span class="ruby-ivar">@numb_prim</span> = <span class="ruby-ivar">@shel_tem</span>.<span class="ruby-identifier">sum</span>
+    <span class="ruby-comment cmt">#@numb_atm = @atom_xyz.size / 3</span>
+    <span class="ruby-ivar">@maxL</span> = <span class="ruby-ivar">@shel_lqn</span>.<span class="ruby-identifier">max</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

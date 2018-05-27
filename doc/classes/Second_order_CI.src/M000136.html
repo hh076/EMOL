@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>show_drt (Second_order_CI)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File drt_soci.rb, line 213</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">show_drt</span>
+    <span class="ruby-identifier">show_drt_title</span>
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   STATE information   NVE = %3d,  S*2 = %3d \n&quot;</span>, <span class="ruby-identifier">$Info</span>.<span class="ruby-identifier">nve</span>, <span class="ruby-identifier">$Info</span>.<span class="ruby-identifier">is</span> )
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   MO classification   NORB = %3d&quot;</span>, <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">norb</span> )
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   ( NCORE=%3d, NVAL=%3d, NEXT=%3d )\n\n&quot;</span>, <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">ncore</span>, <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">nval</span>, <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">next</span> )
+
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   Number of generated nodes = %7d \n&quot;</span>, <span class="ruby-identifier">get_nnodes</span> )
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;   Number of generated csfs  = %7d \n&quot;</span>, <span class="ruby-identifier">get_ncsfs</span> )
+
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n *** Nodes, Upper Arc Table, and Arc Weights\n&quot;</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;                             upper arcs                #arcs         upper weight\n&quot;</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;     n    mo  el  is         e      u      d      f                  e        u        d        f\n&quot;</span>
+    (<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>).<span class="ruby-identifier">reverse_each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">node</span> <span class="ruby-operator">|</span>
+      <span class="ruby-identifier">c</span> = <span class="ruby-ivar">@nodes</span>[ <span class="ruby-identifier">node</span> ].<span class="ruby-identifier">code</span>
+      <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%6d ( %3d %3d %3d ) &quot;</span>, <span class="ruby-identifier">node</span>, <span class="ruby-identifier">c</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">c</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">c</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">c</span>[<span class="ruby-value">3</span>] )
+      <span class="ruby-ivar">@nodes</span>[ <span class="ruby-identifier">node</span> ].<span class="ruby-identifier">show_upper_arc</span>
+    <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n *** Lower Arc Table\n&quot;</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;            lower arcs\n&quot;</span>
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;    n       e      u      d      f\n&quot;</span>
+     (<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>).<span class="ruby-identifier">reverse_each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">node</span> <span class="ruby-operator">|</span>
+      <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%5d &quot;</span>, <span class="ruby-identifier">node</span>)
+      <span class="ruby-ivar">@nodes</span>[ <span class="ruby-identifier">node</span> ].<span class="ruby-identifier">show_lower_arc</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

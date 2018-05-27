@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: BrooksCases</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">BrooksCases</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/emol_expression_rb.html">
+                emol_expression.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000181">add_expr</a>&nbsp;&nbsp;
+      <a href="#M000200">all</a>&nbsp;&nbsp;
+      <a href="#M000183">case01</a>&nbsp;&nbsp;
+      <a href="#M000184">case02</a>&nbsp;&nbsp;
+      <a href="#M000185">case03</a>&nbsp;&nbsp;
+      <a href="#M000186">case1</a>&nbsp;&nbsp;
+      <a href="#M000195">case10</a>&nbsp;&nbsp;
+      <a href="#M000196">case11</a>&nbsp;&nbsp;
+      <a href="#M000197">case12</a>&nbsp;&nbsp;
+      <a href="#M000198">case13</a>&nbsp;&nbsp;
+      <a href="#M000199">case14</a>&nbsp;&nbsp;
+      <a href="#M000187">case2</a>&nbsp;&nbsp;
+      <a href="#M000188">case3</a>&nbsp;&nbsp;
+      <a href="#M000189">case4</a>&nbsp;&nbsp;
+      <a href="#M000190">case5</a>&nbsp;&nbsp;
+      <a href="#M000191">case6</a>&nbsp;&nbsp;
+      <a href="#M000192">case7</a>&nbsp;&nbsp;
+      <a href="#M000193">case8</a>&nbsp;&nbsp;
+      <a href="#M000194">case9</a>&nbsp;&nbsp;
+      <a href="#M000180">expand_expr</a>&nbsp;&nbsp;
+      <a href="#M000182">get_num_coefficient</a>&nbsp;&nbsp;
+      <a href="#M000177">new</a>&nbsp;&nbsp;
+      <a href="#M000179">tri</a>&nbsp;&nbsp;
+      <a href="#M000178">triangle</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">drt</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">expr</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">expr_one</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">norb</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000177" class="method-detail">
+        <a name="M000177"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000177.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000177.html');return false;">
+          <span class="method-name">new</span><span class="method-args">( _drt )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000181" class="method-detail">
+        <a name="M000181"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000181.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000181.html');return false;">
+          <span class="method-name">add_expr</span><span class="method-args">( expr_in, coef, a )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000200" class="method-detail">
+        <a name="M000200"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000200.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000200.html');return false;">
+          <span class="method-name">all</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000183" class="method-detail">
+        <a name="M000183"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000183.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000183.html');return false;">
+          <span class="method-name">case01</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000184" class="method-detail">
+        <a name="M000184"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000184.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000184.html');return false;">
+          <span class="method-name">case02</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000185" class="method-detail">
+        <a name="M000185"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000185.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000185.html');return false;">
+          <span class="method-name">case03</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000186" class="method-detail">
+        <a name="M000186"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000186.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000186.html');return false;">
+          <span class="method-name">case1</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000195" class="method-detail">
+        <a name="M000195"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000195.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000195.html');return false;">
+          <span class="method-name">case10</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000196" class="method-detail">
+        <a name="M000196"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000196.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000196.html');return false;">
+          <span class="method-name">case11</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000197" class="method-detail">
+        <a name="M000197"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000197.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000197.html');return false;">
+          <span class="method-name">case12</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000198" class="method-detail">
+        <a name="M000198"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000198.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000198.html');return false;">
+          <span class="method-name">case13</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000199" class="method-detail">
+        <a name="M000199"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000199.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000199.html');return false;">
+          <span class="method-name">case14</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000187" class="method-detail">
+        <a name="M000187"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000187.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000187.html');return false;">
+          <span class="method-name">case2</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000188" class="method-detail">
+        <a name="M000188"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000188.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000188.html');return false;">
+          <span class="method-name">case3</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000189" class="method-detail">
+        <a name="M000189"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000189.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000189.html');return false;">
+          <span class="method-name">case4</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000190" class="method-detail">
+        <a name="M000190"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000190.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000190.html');return false;">
+          <span class="method-name">case5</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000191" class="method-detail">
+        <a name="M000191"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000191.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000191.html');return false;">
+          <span class="method-name">case6</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000192" class="method-detail">
+        <a name="M000192"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000192.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000192.html');return false;">
+          <span class="method-name">case7</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000193" class="method-detail">
+        <a name="M000193"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000193.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000193.html');return false;">
+          <span class="method-name">case8</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000194" class="method-detail">
+        <a name="M000194"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000194.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000194.html');return false;">
+          <span class="method-name">case9</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000180" class="method-detail">
+        <a name="M000180"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000180.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000180.html');return false;">
+          <span class="method-name">expand_expr</span><span class="method-args">( expr_in )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000182" class="method-detail">
+        <a name="M000182"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000182.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000182.html');return false;">
+          <span class="method-name">get_num_coefficient</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000179" class="method-detail">
+        <a name="M000179"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000179.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000179.html');return false;">
+          <span class="method-name">tri</span><span class="method-args">( p, q )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000178" class="method-detail">
+        <a name="M000178"></a>
+
+        <div class="method-heading">
+          <a href="BrooksCases.src/M000178.html" target="Code" class="method-signature"
+            onclick="popupCode('BrooksCases.src/M000178.html');return false;">
+          <span class="method-name">triangle</span><span class="method-args">( a, b )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

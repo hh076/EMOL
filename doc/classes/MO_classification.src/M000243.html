@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (MO_classification)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File drt_soci.rb, line 22</span>
+   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">_ncore</span>, <span class="ruby-identifier">_nval</span>, <span class="ruby-identifier">_nexternal</span> )
+<span class="ruby-comment cmt">#           _ncore     : 0-2 電子励起可能な軌道数</span>
+<span class="ruby-comment cmt">#           _nval      : 自由な個数の電子占有可能な軌道数</span>
+<span class="ruby-comment cmt">#           _nexternal : 0-2 電子占有可能な軌道数</span>
+      <span class="ruby-ivar">@ncore</span> = <span class="ruby-identifier">_ncore</span>
+      <span class="ruby-ivar">@nval</span>  = <span class="ruby-identifier">_nval</span>
+      <span class="ruby-ivar">@next</span>  = <span class="ruby-identifier">_nexternal</span>
+      <span class="ruby-ivar">@norb</span>  = <span class="ruby-ivar">@ncore</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@nval</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@next</span>
+      <span class="ruby-ivar">@core_range</span> = <span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-ivar">@ncore</span>
+      <span class="ruby-ivar">@val_range</span> = <span class="ruby-ivar">@ncore</span><span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-ivar">@ncore</span><span class="ruby-operator">+</span><span class="ruby-ivar">@nval</span>
+      <span class="ruby-ivar">@ext_range</span> = <span class="ruby-ivar">@ncore</span><span class="ruby-operator">+</span><span class="ruby-ivar">@nval</span><span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-ivar">@ncore</span><span class="ruby-operator">+</span><span class="ruby-ivar">@nval</span><span class="ruby-operator">+</span><span class="ruby-ivar">@next</span>
+   <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

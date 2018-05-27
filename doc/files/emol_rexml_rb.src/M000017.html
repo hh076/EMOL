@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>read_basis_set (emol_rexml.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_rexml.rb, line 97</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_basis_set</span>(<span class="ruby-identifier">bs_name</span>, <span class="ruby-identifier">atom</span>)
+  <span class="ruby-comment cmt">#doc = Document.new File.new(&quot;../body2/&quot; + bs_name + &quot;/&quot; + atom + &quot;.xml&quot;) </span>
+  <span class="ruby-identifier">doc</span> = <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">atom</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;.xml&quot;</span>) 
+  <span class="ruby-identifier">bs</span> = []
+  <span class="ruby-identifier">b</span> = <span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">doc</span>, <span class="ruby-value str">&quot;basis_set/body&quot;</span>)
+  <span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">b</span>, <span class="ruby-value str">&quot;basis&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">bf</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">l</span> = <span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">bf</span>, <span class="ruby-value str">&quot;attribute::l&quot;</span>).<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">to_i</span>
+    <span class="ruby-identifier">zeta</span> = []; <span class="ruby-identifier">coef</span> = []
+    <span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">bf</span>, <span class="ruby-value str">&quot;primitive&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">zeta</span>.<span class="ruby-identifier">push</span>(<span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">p</span>, <span class="ruby-value str">&quot;attribute::zeta&quot;</span>).<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">to_f</span>)
+      <span class="ruby-identifier">coef</span>.<span class="ruby-identifier">push</span>(<span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">p</span>, <span class="ruby-value str">&quot;attribute::coef&quot;</span>).<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">to_f</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">bs</span>.<span class="ruby-identifier">push</span>(<span class="ruby-constant">Basis_function</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">l</span>, <span class="ruby-identifier">zeta</span>, <span class="ruby-identifier">coef</span>))
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-constant">Basis_set</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">bs</span>)
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

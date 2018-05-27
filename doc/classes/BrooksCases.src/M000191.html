@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>case6 (BrooksCases)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 796</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">case6</span>
+        <span class="ruby-identifier">op</span> = <span class="ruby-constant">TensorProduct</span>.<span class="ruby-identifier">new</span>([ <span class="ruby-constant">CCS</span>, <span class="ruby-constant">A</span>, <span class="ruby-constant">A</span> ], [ <span class="ruby-value">1</span>, <span class="ruby-value">2</span>, <span class="ruby-value">1</span> ] )
+        <span class="ruby-identifier">expr_ilik</span> = <span class="ruby-identifier">calc_TensorOp_average</span>( <span class="ruby-ivar">@drt</span>, <span class="ruby-identifier">op</span>, <span class="ruby-value">6</span> )
+
+<span class="ruby-comment cmt">#       expr_ilik = add_expr( [expr_ilik], [ -1 ], [ 0, 3, 1, 2 ] )</span>
+        <span class="ruby-identifier">expr_ilik</span> = <span class="ruby-identifier">add_expr</span>( [<span class="ruby-identifier">expr_ilik</span>], [ <span class="ruby-value">1</span> ], [ <span class="ruby-value">0</span>, <span class="ruby-value">3</span>, <span class="ruby-value">1</span>, <span class="ruby-value">2</span> ] )
+
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">expr_ilik</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

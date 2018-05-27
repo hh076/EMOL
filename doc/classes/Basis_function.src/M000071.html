@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>show (Basis_function)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_rexml.rb, line 70</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">show</span>
+    <span class="ruby-identifier">ang</span> = [<span class="ruby-value str">&quot;S&quot;</span>, <span class="ruby-value str">&quot;P&quot;</span>, <span class="ruby-value str">&quot;D&quot;</span>, <span class="ruby-value str">&quot;F&quot;</span>, <span class="ruby-value str">&quot;G&quot;</span>, <span class="ruby-value str">&quot;H&quot;</span>]
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;*** %3s  %5d \n&quot;</span>, <span class="ruby-identifier">ang</span>[<span class="ruby-ivar">@l</span>], <span class="ruby-ivar">@zeta</span>.<span class="ruby-identifier">size</span>)
+    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-ivar">@zeta</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> <span class="ruby-keyword kw">do</span>
+      <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%12.6f  %12.6f \n&quot;</span>, <span class="ruby-ivar">@zeta</span>[<span class="ruby-identifier">i</span>], <span class="ruby-ivar">@coef</span>[<span class="ruby-identifier">i</span>])
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

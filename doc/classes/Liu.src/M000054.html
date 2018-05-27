@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>solve (Liu)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File liu_v12.rb, line 34</span>
+   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">solve</span>
+      <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; \n&quot;</span> )  
+      <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;     n    dim    E                 Elow             Dev \n&quot;</span> )  
+      <span class="ruby-identifier">iteration</span> = <span class="ruby-value">-1</span>; <span class="ruby-identifier">m</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">prev_e</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@nsol</span>, <span class="ruby-value">0</span><span class="ruby-value">.0</span> )
+
+      <span class="ruby-identifier">n_add</span> = <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">size2</span>
+      <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">n_add</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+         <span class="ruby-identifier">iteration</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+<span class="ruby-comment cmt">#                                           (2) Small matrix eigenvalue problem</span>
+         <span class="ruby-identifier">m</span> = <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">size2</span>
+         <span class="ruby-identifier">rdmat</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-identifier">m</span>, <span class="ruby-identifier">m</span>)
+         <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">m</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">i</span>
+               <span class="ruby-identifier">rdmat</span>[<span class="ruby-identifier">i</span>, <span class="ruby-identifier">j</span>] = <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">col</span>(<span class="ruby-identifier">i</span>).<span class="ruby-identifier">col</span> <span class="ruby-operator">*</span> <span class="ruby-ivar">@ab</span>.<span class="ruby-identifier">col</span>(<span class="ruby-identifier">j</span>)
+            <span class="ruby-keyword kw">end</span>
+         <span class="ruby-keyword kw">end</span> 
+<span class="ruby-comment cmt">#         EmolUtil::print_2dim_ary( rdmat.to_a, &quot;Small Matrix&quot;, 8, &quot;%12.6f&quot; )</span>
+         <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv</span>( <span class="ruby-identifier">rdmat</span> )
+         <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv_sort</span>( <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">type</span>=<span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-constant">SORT_VAL_ASC</span> )
+<span class="ruby-comment cmt">#         EmolUtil::print_2dim_ary_with_value( evec.to_a, eval.to_a, &quot;Eigenvalue and Vectors of Small Matrix&quot;, 8, &quot;%12.6f&quot; )</span>
+
+<span class="ruby-comment cmt">#                                           (3) Correction vectors</span>
+         <span class="ruby-identifier">f</span> = []
+         <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">k</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@nsol</span>
+            <span class="ruby-identifier">d</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-ivar">@n</span> )
+            <span class="ruby-identifier">vec</span> = <span class="ruby-identifier">evec</span>.<span class="ruby-identifier">col</span>( <span class="ruby-identifier">k</span> ); <span class="ruby-identifier">val</span> = <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">m</span>
+               <span class="ruby-identifier">d</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">vec</span>[ <span class="ruby-identifier">i</span> ] <span class="ruby-operator">*</span> ( <span class="ruby-ivar">@ab</span>.<span class="ruby-identifier">col</span>( <span class="ruby-identifier">i</span> ) <span class="ruby-operator">-</span> <span class="ruby-identifier">val</span> <span class="ruby-operator">*</span> <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">col</span>( <span class="ruby-identifier">i</span> ) )
+            <span class="ruby-keyword kw">end</span>
+
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">p</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@n</span>
+               <span class="ruby-identifier">d</span>[ <span class="ruby-identifier">p</span> ] = <span class="ruby-identifier">d</span>[ <span class="ruby-identifier">p</span> ] <span class="ruby-operator">/</span> ( <span class="ruby-identifier">val</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@a</span>.<span class="ruby-identifier">get_diag</span>( <span class="ruby-identifier">p</span> ) )    
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">f</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">d</span> )
+         <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#         show_vectors( f, &quot;Correction vectors&quot; )</span>
+
+<span class="ruby-comment cmt">#                                           Print energy lowerings</span>
+         <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">k</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@nsol</span>
+            <span class="ruby-identifier">lowering</span> = <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">-</span> <span class="ruby-identifier">prev_e</span>[ <span class="ruby-identifier">k</span> ]
+<span class="ruby-comment cmt">#     p f[ k ] * f[ k ].col </span>
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; %5d  %5d  %14.10f    %14.10f     %10.8f \n&quot;</span>, 
+                   <span class="ruby-identifier">iteration</span>, <span class="ruby-identifier">m</span>, <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-identifier">lowering</span>, <span class="ruby-constant">Math</span><span class="ruby-operator">::</span><span class="ruby-identifier">sqrt</span>( <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ].<span class="ruby-identifier">col</span> ) )
+            <span class="ruby-identifier">prev_e</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">eval</span>[ <span class="ruby-identifier">k</span> ]
+         <span class="ruby-keyword kw">end</span>
+
+<span class="ruby-comment cmt">#                                           (4, 5) Check convergence and Schmidt orthonormaization </span>
+         <span class="ruby-identifier">n_add</span> = <span class="ruby-value">0</span>
+         <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">k</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@nsol</span>
+            <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">each_col</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">b</span> <span class="ruby-operator">|</span>
+               <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">-</span> ( <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">b</span> ) <span class="ruby-operator">*</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">col</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Math</span><span class="ruby-operator">::</span><span class="ruby-identifier">sqrt</span>( <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ].<span class="ruby-identifier">col</span> ) <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@thresh</span>
+               <span class="ruby-ivar">@b</span> = <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">horzcat</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">f</span>[ <span class="ruby-identifier">k</span> ].<span class="ruby-identifier">normalize</span>.<span class="ruby-identifier">col</span> ) )
+               <span class="ruby-identifier">n_add</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+         <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#        show_matrix( @b, &quot;New element vectors&quot; )</span>
+
+<span class="ruby-comment cmt">#                                           (6) Ab generation for newly added b vectors</span>
+         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n_add</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@ab</span> = <span class="ruby-ivar">@ab</span>.<span class="ruby-identifier">horzcat</span>( <span class="ruby-ivar">@a</span>.<span class="ruby-identifier">get_hc</span>( <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">submatrix</span>( <span class="ruby-keyword kw">nil</span>, <span class="ruby-ivar">@b</span>.<span class="ruby-identifier">size2</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">n_add</span><span class="ruby-operator">...</span><span class="ruby-ivar">@b</span>.<span class="ruby-identifier">size2</span> ) ) )
+         <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">eval</span>, <span class="ruby-ivar">@b</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">evec</span>.<span class="ruby-identifier">submatrix</span>( <span class="ruby-keyword kw">nil</span>, <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@nsol</span> )
+   <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (NO_Analysis)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_no.rb, line 23</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">obj</span> = <span class="ruby-keyword kw">nil</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@nbf</span> = <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@nob</span> = <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@nstate</span> = <span class="ruby-value">0</span>
+            <span class="ruby-ivar">@occ</span> = [] 
+            <span class="ruby-ivar">@no</span> = []
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>   <span class="ruby-comment cmt">#</span>
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ]
+            <span class="ruby-identifier">molinfo</span> = <span class="ruby-constant">Data_molinfo</span><span class="ruby-operator">::</span><span class="ruby-identifier">molinfo_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">1</span> ]
+            <span class="ruby-identifier">cao</span> = <span class="ruby-constant">Data_rhf</span><span class="ruby-operator">::</span><span class="ruby-identifier">cao_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">2</span> ]
+            <span class="ruby-identifier">expr_one</span> = <span class="ruby-constant">Data_expression_one</span><span class="ruby-operator">::</span><span class="ruby-identifier">expr_data</span>
+<span class="ruby-comment cmt">#           expr_one = Data_super_CI_expression_one::expr_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">3</span> ]
+            <span class="ruby-identifier">hmat</span> = <span class="ruby-constant">Data_hmatrix</span><span class="ruby-operator">::</span><span class="ruby-identifier">hmatrix_data</span>
+
+            <span class="ruby-ivar">@nbf</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">nbf</span>
+            <span class="ruby-identifier">bs_name</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_bs_name</span>
+            <span class="ruby-identifier">n_frozen</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">n_frozen</span>
+            <span class="ruby-identifier">n_core</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">n_core</span>
+            <span class="ruby-identifier">n_active</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">n_active</span>
+            <span class="ruby-identifier">n_external</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">n_external</span>
+            <span class="ruby-ivar">@nob</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">nob</span>
+            <span class="ruby-identifier">evec</span> = <span class="ruby-identifier">hmat</span>.<span class="ruby-identifier">eigen_vector</span>
+            <span class="ruby-identifier">eval</span> = <span class="ruby-identifier">hmat</span>.<span class="ruby-identifier">eigen_value</span>
+            <span class="ruby-identifier">csf_list</span> = <span class="ruby-identifier">expr_one</span>.<span class="ruby-identifier">csf_list</span>
+
+            <span class="ruby-ivar">@nstate</span> = <span class="ruby-identifier">hmat</span>.<span class="ruby-identifier">eigen_value</span>.<span class="ruby-identifier">size</span>
+            <span class="ruby-ivar">@occ</span> = [] 
+            <span class="ruby-ivar">@no</span> = []
+            (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-ivar">@nstate</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">istate</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">no</span>, <span class="ruby-identifier">occ</span> = <span class="ruby-identifier">get_no</span>( <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">n_frozen</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">expr_one</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">istate</span> )
+                <span class="ruby-identifier">print_ci_result</span>( <span class="ruby-identifier">istate</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">csf_list</span>, <span class="ruby-identifier">n_core</span>, <span class="ruby-identifier">n_active</span>, <span class="ruby-identifier">n_external</span> )
+                <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_2dim_ary_with_value_moname</span>( <span class="ruby-identifier">no</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">occ</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">bs_name</span>, <span class="ruby-value str">&quot;Natural Orbitals and Occupation Numbers &quot;</span>, <span class="ruby-value">8</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span> )
+                <span class="ruby-ivar">@no</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">no</span> )
+                <span class="ruby-ivar">@occ</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">occ</span> )
+            <span class="ruby-keyword kw">end</span>
+    
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">NO_Analysis</span> ) ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@nbf</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nbf</span>
+            <span class="ruby-ivar">@nob</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nob</span>
+            <span class="ruby-ivar">@occ</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">occ</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@no</span>  = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">no</span>.<span class="ruby-identifier">clone</span>
+        <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

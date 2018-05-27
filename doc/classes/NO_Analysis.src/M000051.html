@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_no (NO_Analysis)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_no.rb, line 77</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_no</span>( <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">n_frozen</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">expr_one</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">istate</span> ) 
+        <span class="ruby-identifier">pair</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">nob</span> <span class="ruby-operator">*</span> ( <span class="ruby-identifier">nob</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">/</span> <span class="ruby-value">2</span> )
+        <span class="ruby-identifier">pq</span> = <span class="ruby-value">-1</span>
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">p</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">nbf</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">q</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">p</span>
+                <span class="ruby-identifier">pq</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+                <span class="ruby-identifier">pair</span>[ <span class="ruby-identifier">pq</span> ] = [<span class="ruby-identifier">p</span>, <span class="ruby-identifier">q</span>]
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#                     make density matrix in mo representation</span>
+        <span class="ruby-identifier">density</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-identifier">nob</span>, <span class="ruby-identifier">nob</span>)
+        <span class="ruby-identifier">i_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">j_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_prev</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">ij_end</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">expr_one</span>.<span class="ruby-identifier">ij</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ij</span>, <span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">num</span> = <span class="ruby-identifier">expr_one</span>.<span class="ruby-identifier">pqrs</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-identifier">coef</span> = <span class="ruby-identifier">expr_one</span>.<span class="ruby-identifier">coef</span>[ <span class="ruby-identifier">k</span> ]
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">ij_prev</span>
+                <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span>; <span class="ruby-identifier">j</span> = <span class="ruby-identifier">j_prev</span> 
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">ij</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">i_prev</span>
+                <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span>
+                <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+            <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">ij_end</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i_prev</span>
+                <span class="ruby-identifier">i</span> = <span class="ruby-identifier">i_prev</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+                <span class="ruby-identifier">j</span> = <span class="ruby-identifier">ij</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">ij_end</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">p</span> = <span class="ruby-identifier">pair</span>[ <span class="ruby-identifier">num</span> ][ <span class="ruby-value">0</span> ]
+            <span class="ruby-identifier">q</span> = <span class="ruby-identifier">pair</span>[ <span class="ruby-identifier">num</span> ][ <span class="ruby-value">1</span> ]
+            <span class="ruby-identifier">density</span>[ <span class="ruby-identifier">p</span>, <span class="ruby-identifier">q</span> ] <span class="ruby-operator">+=</span> <span class="ruby-identifier">evec</span>[ <span class="ruby-identifier">i</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>, <span class="ruby-identifier">istate</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">evec</span>[ <span class="ruby-identifier">j</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>, <span class="ruby-identifier">istate</span> ] <span class="ruby-operator">*</span> <span class="ruby-identifier">coef</span>
+            <span class="ruby-identifier">ij_prev</span> = <span class="ruby-identifier">ij</span>
+            <span class="ruby-identifier">i_prev</span> = <span class="ruby-identifier">i</span>
+            <span class="ruby-identifier">j_prev</span> = <span class="ruby-identifier">j</span>
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#  EmolUtil::print_2dim_ary_tri( density.to_a, &quot;Density-matrix&quot;, 8, &quot;%12.6f&quot; )</span>
+
+<span class="ruby-comment cmt">#                     no in mo representation</span>
+        <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv</span>( <span class="ruby-identifier">density</span> )
+        <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-identifier">symmv_sort</span>( <span class="ruby-identifier">eval</span>, <span class="ruby-identifier">evec</span>, <span class="ruby-identifier">type</span>=<span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Eigen</span><span class="ruby-operator">::</span><span class="ruby-constant">SORT_VAL_DESC</span> )
+<span class="ruby-comment cmt">#  EmolUtil::print_2dim_ary_with_value( evec.to_a, eval.to_a, &quot;Natural Orbitals and Occupation Numbers&quot;, 8, &quot;%12.6f&quot; )</span>
+
+<span class="ruby-comment cmt">#                     no in ao representation</span>
+        <span class="ruby-identifier">cao_active</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">alloc</span>(<span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>)
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">nob</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">p</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">nbf</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+                <span class="ruby-identifier">cao_active</span>[ <span class="ruby-identifier">p</span>, <span class="ruby-identifier">i</span> ] = <span class="ruby-identifier">cao</span>[ <span class="ruby-identifier">p</span>, <span class="ruby-identifier">n_frozen</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">i</span> ]
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#  EmolUtil::print_2dim_ary( cao_active.to_a, &quot;Active MOs&quot;, 8, &quot;%12.6f&quot; )</span>
+        <span class="ruby-identifier">no_ao</span> = <span class="ruby-identifier">cao_active</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">evec</span>
+<span class="ruby-comment cmt">#  EmolUtil::print_2dim_ary( no_ao.to_a, &quot;NOs-AOs&quot;, 8, &quot;%12.6f&quot; )</span>
+
+<span class="ruby-comment cmt">#                     add frozen core </span>
+
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n_frozen</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+            <span class="ruby-identifier">no</span> = <span class="ruby-identifier">cao</span>.<span class="ruby-identifier">submatrix</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">n_frozen</span>).<span class="ruby-identifier">horzcat</span>( <span class="ruby-identifier">no_ao</span> )
+            <span class="ruby-identifier">fc</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">n_frozen</span> )
+            <span class="ruby-identifier">fc</span>.<span class="ruby-identifier">set_all</span>( <span class="ruby-value">2.0</span> )
+            <span class="ruby-identifier">occ</span> = <span class="ruby-identifier">fc</span>.<span class="ruby-identifier">connect</span>( <span class="ruby-identifier">eval</span> )
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">no</span> = <span class="ruby-identifier">no_ao</span>
+            <span class="ruby-identifier">occ</span> = <span class="ruby-identifier">eval</span>
+        <span class="ruby-keyword kw">end</span>
+
+<span class="ruby-comment cmt">#       no = GSL::Matrix.alloc(nbf, n_frozen + nob)</span>
+<span class="ruby-comment cmt">#       for i in 0..n_frozen - 1</span>
+<span class="ruby-comment cmt">#           for p in 0..nbf - 1</span>
+<span class="ruby-comment cmt">#               no[ p, i ] = cao[ p, i ]</span>
+<span class="ruby-comment cmt">#           end</span>
+<span class="ruby-comment cmt">#       end</span>
+<span class="ruby-comment cmt">#       for i in 0..nob - 1</span>
+<span class="ruby-comment cmt">#           for p in 0..nbf - 1</span>
+<span class="ruby-comment cmt">#               no[ p, n_frozen + i ] = no_ao[ p, i ]</span>
+<span class="ruby-comment cmt">#           end</span>
+<span class="ruby-comment cmt">#       end</span>
+<span class="ruby-comment cmt">#       occ = GSL::Vector.alloc( n_frozen + nob )</span>
+<span class="ruby-comment cmt">#       for i in 0..n_frozen-1</span>
+<span class="ruby-comment cmt">#           occ[ i ] = 2.0</span>
+<span class="ruby-comment cmt">#       end</span>
+<span class="ruby-comment cmt">#       for i in 0..nob - 1</span>
+<span class="ruby-comment cmt">#           occ[ n_frozen + i ] = eval[ i ]</span>
+<span class="ruby-comment cmt">#       end</span>
+
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">no</span>, <span class="ruby-identifier">occ</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

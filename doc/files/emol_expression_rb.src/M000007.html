@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>calc_TensorOp_average (emol_expression.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_expression.rb, line 453</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">calc_TensorOp_average</span>( <span class="ruby-identifier">drt</span>, <span class="ruby-identifier">h_op</span>, <span class="ruby-identifier">origin</span> )
+
+    <span class="ruby-identifier">all_expr</span> = []
+    <span class="ruby-identifier">iop</span> = <span class="ruby-value">0</span>                                 <span class="ruby-comment cmt"># current operator number</span>
+<span class="ruby-comment cmt"># op                                           TensorProduct</span>
+    <span class="ruby-identifier">kmax</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperlevel</span>( <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">nnode</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> )
+    <span class="ruby-identifier">ng</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">size</span> = <span class="ruby-identifier">kmax</span>, <span class="ruby-identifier">val</span> = <span class="ruby-keyword kw">nil</span> )      <span class="ruby-comment cmt"># node of psi (k)</span>
+    <span class="ruby-identifier">nf</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">size</span> = <span class="ruby-identifier">kmax</span>, <span class="ruby-identifier">val</span> = <span class="ruby-keyword kw">nil</span> )      <span class="ruby-comment cmt"># node of phi (k)</span>
+    <span class="ruby-identifier">wg</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">size</span> = <span class="ruby-identifier">kmax</span>, <span class="ruby-identifier">val</span> = <span class="ruby-keyword kw">nil</span> )      <span class="ruby-comment cmt"># weight of psi (k)</span>
+    <span class="ruby-identifier">wf</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">size</span> = <span class="ruby-identifier">kmax</span>, <span class="ruby-identifier">val</span> = <span class="ruby-keyword kw">nil</span> )      <span class="ruby-comment cmt"># weight of phi (k)</span>
+    <span class="ruby-identifier">mk</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">size</span> = <span class="ruby-identifier">kmax</span>, <span class="ruby-identifier">val</span> = <span class="ruby-keyword kw">nil</span> )      <span class="ruby-comment cmt"># value Lk (k)</span>
+    <span class="ruby-identifier">ijkl</span> = []
+
+    <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Debug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\nTensor Product&quot;</span>, <span class="ruby-value str">&quot;\n&quot;</span>
+        <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">show</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-identifier">inode</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">kmax</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperlevel</span>( <span class="ruby-identifier">inode</span> ) <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">lenop</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+        <span class="ruby-identifier">expr</span> = []; <span class="ruby-identifier">record</span> = {}
+        <span class="ruby-identifier">k</span> = <span class="ruby-identifier">drt</span>.<span class="ruby-identifier">r_upperlevel</span>( <span class="ruby-identifier">inode</span> ) 
+        <span class="ruby-identifier">nf</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">inode</span>; <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">inode</span>; <span class="ruby-identifier">theta</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">mk</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-value">1</span>
+        <span class="ruby-identifier">wg</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-value">0</span>; <span class="ruby-identifier">wf</span>[ <span class="ruby-identifier">k</span> ] = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">hf</span> = <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">op</span>( <span class="ruby-identifier">iop</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Debug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;===== from node &quot;</span>, <span class="ruby-identifier">ng</span>[ <span class="ruby-identifier">k</span> ], <span class="ruby-value str">&quot; with op &quot;</span>, <span class="ruby-constant">Op_nam</span>[<span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">op</span>( <span class="ruby-identifier">iop</span> )], <span class="ruby-value str">&quot;\n&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-constant">Seg_walk</span>[ <span class="ruby-identifier">hf</span> ].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">walk</span> <span class="ruby-operator">|</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Debug</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;=====     walk : &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">walk</span>[<span class="ruby-value">0</span>]], <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-constant">Walk_nam</span>[<span class="ruby-identifier">walk</span>[<span class="ruby-value">1</span>]], <span class="ruby-value str">&quot;\n&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">theta</span> = <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">theta</span>( <span class="ruby-identifier">iop</span> )
+            <span class="ruby-identifier">theta_prev</span> = <span class="ruby-identifier">h_op</span>.<span class="ruby-identifier">theta_prev</span>( <span class="ruby-identifier">iop</span> )
+            <span class="ruby-identifier">tree_search</span>( <span class="ruby-identifier">drt</span>, <span class="ruby-identifier">inode</span>, <span class="ruby-identifier">walk</span>, <span class="ruby-identifier">k</span>, <span class="ruby-identifier">ng</span>, <span class="ruby-identifier">nf</span>, <span class="ruby-identifier">wg</span>, <span class="ruby-identifier">wf</span>, 
+                         <span class="ruby-identifier">iop</span>, <span class="ruby-identifier">h_op</span>, <span class="ruby-identifier">hf</span>, <span class="ruby-identifier">theta</span>, <span class="ruby-identifier">theta_prev</span>, <span class="ruby-identifier">mk</span>, <span class="ruby-identifier">ijkl</span>, <span class="ruby-identifier">origin</span>, <span class="ruby-identifier">expr</span>, <span class="ruby-identifier">record</span> )
+        <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#       all_expr.push( expr.sort{ |x, y| x.top - y.top } )</span>
+        <span class="ruby-identifier">all_expr</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">sort</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">top</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">y</span>.<span class="ruby-identifier">top</span> }.<span class="ruby-identifier">uniq</span> )
+        <span class="ruby-identifier">inode</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">all_expr</span>.<span class="ruby-identifier">flatten</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

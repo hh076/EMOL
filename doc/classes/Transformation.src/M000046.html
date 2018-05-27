@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Transformation)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_trans.rb, line 44</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">obj</span> = <span class="ruby-keyword kw">nil</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@core_energy</span> = <span class="ruby-value">0</span><span class="ruby-value">.0</span>
+            <span class="ruby-ivar">@s_mo</span> = <span class="ruby-keyword kw">nil</span>
+            <span class="ruby-ivar">@h_mo</span> = <span class="ruby-keyword kw">nil</span>
+            <span class="ruby-ivar">@eris_mo</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>     
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ]
+            <span class="ruby-identifier">molinfo</span> = <span class="ruby-constant">Data_molinfo</span><span class="ruby-operator">::</span><span class="ruby-identifier">molinfo_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">1</span> ]
+            <span class="ruby-identifier">s</span> = <span class="ruby-constant">Data_molint</span><span class="ruby-operator">::</span><span class="ruby-identifier">s_data</span>
+            <span class="ruby-identifier">h</span> = <span class="ruby-constant">Data_molint</span><span class="ruby-operator">::</span><span class="ruby-identifier">h_data</span>
+            <span class="ruby-identifier">nz_g</span> = <span class="ruby-constant">Data_molint</span><span class="ruby-operator">::</span><span class="ruby-identifier">nz_g_data</span>
+
+            <span class="ruby-identifier">load</span> <span class="ruby-identifier">obj</span>[ <span class="ruby-value">2</span> ]
+            <span class="ruby-identifier">cao</span> = <span class="ruby-constant">Data_rhf</span><span class="ruby-operator">::</span><span class="ruby-identifier">cao_data</span>
+
+            <span class="ruby-identifier">nbf</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nbf</span>
+            <span class="ruby-identifier">npq</span> = <span class="ruby-identifier">nbf</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">nbf</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+            <span class="ruby-identifier">n_frozen</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_n_frozen</span>
+            <span class="ruby-identifier">nob</span> = <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nob</span>
+
+            <span class="ruby-identifier">dao</span> = <span class="ruby-constant">Density</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">cao</span>, <span class="ruby-identifier">n_frozen</span>, <span class="ruby-value">2</span> ) 
+            <span class="ruby-identifier">g</span> = <span class="ruby-identifier">calc_gmat_nz_eris</span>( <span class="ruby-identifier">nz_g</span>, <span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span>, <span class="ruby-identifier">nbf</span> )
+            <span class="ruby-identifier">f</span> = <span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">g</span>
+            <span class="ruby-ivar">@core_energy</span> = (<span class="ruby-identifier">dao</span>.<span class="ruby-identifier">get_body</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">h</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">f</span>)).<span class="ruby-identifier">trace</span> <span class="ruby-operator">/</span> <span class="ruby-value">2.0</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_e_nucl</span>
+<span class="ruby-comment cmt">#</span>
+            <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n \n ******T r a n s f o r m a t i o n \n \n&quot;</span>
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;nbf, n_frozen, nob : %5d  %5d  %5d  \n&quot;</span>, <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">n_frozen</span>, <span class="ruby-identifier">nob</span> )
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;frozen core energy : %14.8f \n&quot;</span>, <span class="ruby-ivar">@core_energy</span>) 
+
+            <span class="ruby-identifier">cao_trans</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span> )
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nob</span>
+                <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">nbf</span>
+                    <span class="ruby-identifier">cao_trans</span>[ <span class="ruby-identifier">j</span>, <span class="ruby-identifier">i</span> ] = <span class="ruby-identifier">cao</span>[ <span class="ruby-identifier">j</span>, <span class="ruby-identifier">n_frozen</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">i</span> ]
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+
+<span class="ruby-comment cmt">#           EmolUtil::print_2dim_ary(cao.to_a, &quot;Original MO matrix&quot;, 8, &quot;%12.6f&quot;)</span>
+            <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_2dim_ary</span>(<span class="ruby-identifier">cao_trans</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-value str">&quot;Transformation matrix&quot;</span>, <span class="ruby-value">8</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span>)
+
+            <span class="ruby-identifier">s_work</span>, <span class="ruby-identifier">h_work</span>, <span class="ruby-identifier">eris_work</span>, <span class="ruby-identifier">cao_1dim</span> = <span class="ruby-identifier">two_one_dimCopy</span>( <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">s</span>, <span class="ruby-identifier">f</span>, <span class="ruby-identifier">nz_g</span>, <span class="ruby-identifier">cao_trans</span> )
+            <span class="ruby-identifier">cpq</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">nbf</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">nob</span> )
+            <span class="ruby-ivar">@s_mo</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">nob</span> <span class="ruby-operator">*</span> ( <span class="ruby-identifier">nob</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">/</span> <span class="ruby-value">2</span> )
+            <span class="ruby-ivar">@h_mo</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">nob</span> <span class="ruby-operator">*</span> ( <span class="ruby-identifier">nob</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">/</span> <span class="ruby-value">2</span> )
+<span class="ruby-comment cmt">#            Inttrans::trnpp( 1, 1, nbf, nob, s_work, s_mo, 1, cao_1dim, cpq )</span>
+<span class="ruby-comment cmt">#            Inttrans::trnpp( 1, 1, nbf, nob, h_work, h_mo, 1, cao_1dim, cpq )</span>
+            <span class="ruby-constant">Inttrans</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnpp</span>( <span class="ruby-value">1</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">s_work</span>, <span class="ruby-ivar">@s_mo</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">cao_1dim</span>, <span class="ruby-identifier">cpq</span> )
+            <span class="ruby-constant">Inttrans</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnpp</span>( <span class="ruby-value">1</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">h_work</span>, <span class="ruby-ivar">@h_mo</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">cao_1dim</span>, <span class="ruby-identifier">cpq</span> )
+
+<span class="ruby-comment cmt">#            EmolUtil::print_ary_tri(s_mo.to_a, &quot;Overlap matrix&quot;, 10, &quot;%12.6f&quot;)</span>
+<span class="ruby-comment cmt">#            EmolUtil::print_ary_tri(h_mo.to_a, &quot;H matrix&quot;, 10, &quot;%12.6f&quot;)</span>
+            <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_ary_tri</span>(<span class="ruby-ivar">@s_mo</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-value str">&quot;Overlap matrix&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span>)
+            <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_ary_tri</span>(<span class="ruby-ivar">@h_mo</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-value str">&quot;H matrix&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span>)
+
+            <span class="ruby-identifier">mi</span> = <span class="ruby-value">1</span>
+            <span class="ruby-identifier">mpq</span> = <span class="ruby-identifier">nob</span> <span class="ruby-operator">*</span> ( <span class="ruby-identifier">nob</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> ) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">n</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">npq</span>
+                <span class="ruby-constant">Inttrans</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnpp</span>(<span class="ruby-identifier">mi</span>, <span class="ruby-identifier">mi</span>, <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">eris_work</span>, <span class="ruby-identifier">eris_work</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">cao_1dim</span>, <span class="ruby-identifier">cpq</span>)
+                <span class="ruby-identifier">mi</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">npq</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-constant">Inttrans</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnsps</span>(<span class="ruby-identifier">npq</span>, <span class="ruby-identifier">mpq</span>, <span class="ruby-identifier">eris_work</span>)
+
+            <span class="ruby-identifier">buf</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">npq</span> )
+            <span class="ruby-ivar">@eris_mo</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span>.<span class="ruby-identifier">alloc</span>( <span class="ruby-identifier">mpq</span><span class="ruby-operator">*</span>(<span class="ruby-identifier">mpq</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>)<span class="ruby-operator">/</span><span class="ruby-value">2</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> )
+            <span class="ruby-identifier">m</span> = <span class="ruby-value">1</span>; <span class="ruby-identifier">kin</span> = <span class="ruby-value">0</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">n</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">mpq</span>
+                <span class="ruby-constant">Inttrans</span><span class="ruby-operator">::</span><span class="ruby-identifier">trnrr</span>(<span class="ruby-identifier">m</span>, <span class="ruby-identifier">n</span>, <span class="ruby-identifier">nbf</span>, <span class="ruby-identifier">nob</span>, <span class="ruby-identifier">eris_work</span>, <span class="ruby-identifier">buf</span>, <span class="ruby-identifier">cao_1dim</span>, <span class="ruby-identifier">cpq</span>)
+                <span class="ruby-identifier">m</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">npq</span>
+                <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">k</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">n</span>
+                    <span class="ruby-ivar">@eris_mo</span>[ <span class="ruby-identifier">kin</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">k</span> ] = <span class="ruby-identifier">buf</span>[ <span class="ruby-identifier">k</span> ]
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">kin</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">n</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-constant">EmolUtil</span><span class="ruby-operator">::</span><span class="ruby-identifier">print_ary_tri</span>(<span class="ruby-identifier">eris_mo</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-value str">&quot;Eris matrix&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%12.6f&quot;</span>)
+
+            <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;Total energy calculated from mo integrals : %14.8f \n&quot;</span>, 
+            <span class="ruby-ivar">@core_energy</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">close_shell_energy</span>(<span class="ruby-identifier">h_mo</span>, <span class="ruby-identifier">eris_mo</span>, <span class="ruby-identifier">molinfo</span>.<span class="ruby-identifier">get_nel</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">n_frozen</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>) )
+
+        <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Transformation</span> ) ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-ivar">@core_energy</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">core_energy</span>
+            <span class="ruby-ivar">@s_mo</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">s_mo</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@h_mo</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">h_mo</span>.<span class="ruby-identifier">clone</span>
+            <span class="ruby-ivar">@eris_mo</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">eris_mo</span>.<span class="ruby-identifier">clone</span>
+        <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

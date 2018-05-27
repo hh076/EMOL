@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>alltypeprint (emol_futil.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_futil.rb, line 33</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">alltypeprint</span>( <span class="ruby-identifier">obj</span>, <span class="ruby-identifier">symbol_obj</span>, <span class="ruby-identifier">blk</span>, <span class="ruby-identifier">sep</span>, <span class="ruby-identifier">oport</span> )
+        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%s#Class: %s\n&quot;</span>, <span class="ruby-identifier">blk</span>, <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">class</span>
+        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%s%s = &quot;</span>, <span class="ruby-identifier">blk</span>, <span class="ruby-identifier">symbol_obj</span>
+        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> )       <span class="ruby-operator">||</span>
+             <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span> ) <span class="ruby-operator">||</span>
+             <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span> ) ) <span class="ruby-keyword kw">then</span>
+            <span class="ruby-identifier">lenprt</span> = <span class="ruby-value">10000000000</span>
+            <span class="ruby-keyword kw">if</span>    ( <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Fixnum</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">lenprt</span> = <span class="ruby-value">10</span>
+            <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Float</span>  ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">lenprt</span> = <span class="ruby-value">4</span> 
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-identifier">size</span> = <span class="ruby-value">0</span>
+            <span class="ruby-keyword kw">if</span>    ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span>       ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">size</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span>
+            <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">size</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size</span>
+            <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">size</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size1</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size2</span>
+            <span class="ruby-keyword kw">else</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-comment cmt">### write Array</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-value">0</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">NZ_eris</span> ) ) <span class="ruby-keyword kw">then</span>
+                    <span class="ruby-comment cmt">###</span>
+                    <span class="ruby-comment cmt">### NZ_eris Array</span>
+                    <span class="ruby-comment cmt">###</span>
+                    <span class="ruby-identifier">ip</span> = <span class="ruby-value">0</span>
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;[]\n&quot;</span>
+                    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">size</span> <span class="ruby-keyword kw">do</span>
+                        <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ], <span class="ruby-value str">&quot;,&quot;</span>, <span class="ruby-identifier">oport</span> )
+                        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%8sobj.push( value )\n&quot;</span>, <span class="ruby-value str">&quot;&quot;</span>
+                    <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">else</span>
+                    <span class="ruby-comment cmt">###</span>
+                    <span class="ruby-comment cmt">### General Array</span>
+                    <span class="ruby-comment cmt">###</span>
+                    <span class="ruby-comment cmt">#ip = 0</span>
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;[ &quot;</span>
+                    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span>(<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>) <span class="ruby-keyword kw">do</span>
+                        <span class="ruby-comment cmt">#oport.printf &quot;all: value: %s: \&quot;%s\&quot;\n&quot;, obj[ i ].class, obj[ i ]</span>
+                        <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Fixnum</span> ) ) <span class="ruby-operator">||</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Float</span> ) ) <span class="ruby-operator">||</span>
+                           ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">String</span> ) ) <span class="ruby-operator">||</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>
+                            <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ], <span class="ruby-value str">&quot;, &quot;</span>, <span class="ruby-identifier">oport</span> )
+                        <span class="ruby-keyword kw">else</span>
+                            <span class="ruby-identifier">lenprt</span> = <span class="ruby-value">5</span>
+                            <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;%s.new ( ), &quot;</span>, <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ].<span class="ruby-identifier">class</span> )
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-comment cmt">#if ( ( (ip+1) % lenprt ) == 0 ) then</span>
+                        <span class="ruby-comment cmt">#    oport.printf &quot;\n&quot;</span>
+                        <span class="ruby-comment cmt">#end</span>
+                        <span class="ruby-comment cmt">#ip += 1</span>
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Fixnum</span> ) ) <span class="ruby-operator">||</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Float</span> ) ) <span class="ruby-operator">||</span>
+                       ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">String</span> ) ) <span class="ruby-operator">||</span> ( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> ].<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">Array</span> ) ) <span class="ruby-keyword kw">then</span>
+                        <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ], <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-identifier">oport</span> )
+                    <span class="ruby-keyword kw">else</span>
+                        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;%s.new ( ) &quot;</span>, <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ].<span class="ruby-identifier">class</span> )
+                    <span class="ruby-keyword kw">end</span>
+
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot; ].clone&quot;</span>
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n&quot;</span>
+
+                    <span class="ruby-comment cmt">###</span>
+                    <span class="ruby-comment cmt">#for i in 0...obj.length do</span>
+                    <span class="ruby-comment cmt">#    if ( obj[ i ].instance_of?( Fixnum ) ) || ( obj[ i ].instance_of?( Float  ) ) ||</span>
+                    <span class="ruby-comment cmt">#                                             ( obj[ i ].instance_of?( String ) ) then</span>
+                    <span class="ruby-comment cmt">#    else</span>
+                    <span class="ruby-comment cmt">#        p obj, obj.class</span>
+                    <span class="ruby-comment cmt">#        name = obj.instance_variables[ i ]</span>
+                    <span class="ruby-comment cmt">#        printf &quot;name: %d: %s\n&quot;, i, name</span>
+                    <span class="ruby-comment cmt">#        oport.printf( &quot;%s.%s =&quot;, symbol_obj, name[ 1, name.length - 1 ] )</span>
+                    <span class="ruby-comment cmt">#        typeprint( obj.instance_variable_get( obj.instance_variables[ i ] ), &quot;\n&quot;, oport )</span>
+                    <span class="ruby-comment cmt">#    end</span>
+                    <span class="ruby-comment cmt">#end</span>
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-comment cmt">### write GSL::Vector</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Vector</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-identifier">ip</span> = <span class="ruby-value">0</span>
+                <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;GSL::Vector[\n&quot;</span>
+                <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>) <span class="ruby-keyword kw">do</span>
+                    <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span> ], <span class="ruby-value str">&quot;,&quot;</span>, <span class="ruby-identifier">oport</span> )
+                    <span class="ruby-keyword kw">if</span> ( ( (<span class="ruby-identifier">ip</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>) <span class="ruby-operator">%</span> <span class="ruby-identifier">lenprt</span> ) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> ) <span class="ruby-keyword kw">then</span>
+                        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n&quot;</span>
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-identifier">ip</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">size</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ], <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-identifier">oport</span> )
+                <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot; ]&quot;</span>
+                <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n&quot;</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-comment cmt">### write GSL::Matrix</span>
+            <span class="ruby-comment cmt">###</span>
+            <span class="ruby-keyword kw">elsif</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">instance_of?</span>( <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Matrix</span> ) ) <span class="ruby-keyword kw">then</span>
+                <span class="ruby-comment cmt">#ip = 0</span>
+                <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;GSL::Matrix[\n&quot;</span>
+                <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size1</span>) <span class="ruby-keyword kw">do</span>
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;[ &quot;</span>
+                    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size2</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>) <span class="ruby-keyword kw">do</span>
+                        <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span>, <span class="ruby-identifier">j</span> ], <span class="ruby-value str">&quot;,&quot;</span>, <span class="ruby-identifier">oport</span> )
+                        <span class="ruby-comment cmt">#if ( ( (ip+1) % lenprt ) == 0 ) then</span>
+                        <span class="ruby-comment cmt">#    oport.printf &quot;\n&quot;</span>
+                        <span class="ruby-comment cmt">#end</span>
+                        <span class="ruby-comment cmt">#ip += 1</span>
+                    <span class="ruby-keyword kw">end</span>
+                    <span class="ruby-comment cmt">#typeprint( obj[ i * obj.size2 + ( obj.size2 - 1 ) ], &quot;&quot;, oport )</span>
+                    <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>[ <span class="ruby-identifier">i</span>, ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size2</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) ], <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-identifier">oport</span> )
+                    <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot; ]&quot;</span>
+                    <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">i</span> <span class="ruby-operator">!=</span> ( <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">size1</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> ) ) <span class="ruby-keyword kw">then</span>
+                        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;,\n&quot;</span>
+                    <span class="ruby-keyword kw">else</span>
+                        <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot; ]\n&quot;</span>
+                    <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">else</span>
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">typeprint</span>( <span class="ruby-identifier">obj</span>, <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-identifier">oport</span> )
+            <span class="ruby-identifier">oport</span>.<span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n&quot;</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

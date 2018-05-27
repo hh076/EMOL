@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>mk_eris (emol_int.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_int.rb, line 106</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">mk_eris</span> ( <span class="ruby-identifier">numb_shell</span>, <span class="ruby-identifier">shel_lqn</span>, <span class="ruby-identifier">shel_atm</span>, <span class="ruby-identifier">shel_ini</span>, <span class="ruby-identifier">eris</span>, <span class="ruby-identifier">len_lqn</span>, <span class="ruby-identifier">nbf</span> )
+  <span class="ruby-identifier">nz_eris</span> = []
+
+  <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">ish</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">numb_shell</span>
+    <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">jsh</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">ish</span>
+      <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">ksh</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">ish</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ksh</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">ish</span> <span class="ruby-keyword kw">then</span>
+          <span class="ruby-identifier">l_last</span> = <span class="ruby-identifier">ksh</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">l_last</span> = <span class="ruby-identifier">jsh</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">lsh</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">l_last</span>
+          <span class="ruby-identifier">inttype</span>, <span class="ruby-identifier">nsize_int</span>, <span class="ruby-identifier">g_int</span> = <span class="ruby-identifier">eris</span>.<span class="ruby-identifier">calc</span>( <span class="ruby-identifier">ish</span>, <span class="ruby-identifier">jsh</span>, <span class="ruby-identifier">ksh</span>, <span class="ruby-identifier">lsh</span> )
+          <span class="ruby-identifier">ash</span>, <span class="ruby-identifier">bsh</span>, <span class="ruby-identifier">csh</span>, <span class="ruby-identifier">dsh</span>        = <span class="ruby-identifier">eris</span>.<span class="ruby-identifier">exchange_order</span>
+
+<span class="ruby-comment cmt">#                   printf &quot;Orb: ( %d %d %d %d ): type = %d nsize = %d ncomps = %d %d %d %d atoms = %d %d %d %d\n&quot;,</span>
+<span class="ruby-comment cmt">#                          ash, bsh, csh, dsh, inttype, nsize_int,</span>
+<span class="ruby-comment cmt">#                          len_lqn[ shel_lqn[ ash ] ], len_lqn[ shel_lqn[ bsh ] ],</span>
+<span class="ruby-comment cmt">#                          len_lqn[ shel_lqn[ csh ] ], len_lqn[ shel_lqn[ dsh ] ],</span>
+<span class="ruby-comment cmt">#                          shel_atm[ ash ], shel_atm[ bsh ], shel_atm[ csh ], shel_atm[ dsh ]</span>
+<span class="ruby-comment cmt">#                   for i in 0..nsize_int-1</span>
+<span class="ruby-comment cmt">#                      printf &quot; %5d  %23.15e\n&quot;, i, g_int[ i ]</span>
+<span class="ruby-comment cmt">#                   end</span>
+
+          <span class="ruby-identifier">thr_zero</span> = <span class="ruby-constant">EmolConsts</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">:THR_ZERO</span>)
+          <span class="ruby-identifier">ncomp_i</span> = <span class="ruby-identifier">len_lqn</span>[ <span class="ruby-identifier">shel_lqn</span>[ <span class="ruby-identifier">ash</span> ] ]
+          <span class="ruby-identifier">ncomp_j</span> = <span class="ruby-identifier">len_lqn</span>[ <span class="ruby-identifier">shel_lqn</span>[ <span class="ruby-identifier">bsh</span> ] ]
+          <span class="ruby-identifier">ncomp_k</span> = <span class="ruby-identifier">len_lqn</span>[ <span class="ruby-identifier">shel_lqn</span>[ <span class="ruby-identifier">csh</span> ] ]
+          <span class="ruby-identifier">ncomp_l</span> = <span class="ruby-identifier">len_lqn</span>[ <span class="ruby-identifier">shel_lqn</span>[ <span class="ruby-identifier">dsh</span> ] ]
+          <span class="ruby-identifier">flg_ieqj</span> = ( <span class="ruby-identifier">ash</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">bsh</span> )
+          <span class="ruby-identifier">flg_keql</span> = ( <span class="ruby-identifier">csh</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">dsh</span> )
+          <span class="ruby-identifier">flg_same</span> = ( <span class="ruby-identifier">ash</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">csh</span> ) <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">bsh</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">dsh</span> )
+
+          <span class="ruby-identifier">ijn</span> = <span class="ruby-value">-1</span>
+          <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">ip</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">ncomp_i</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">do</span>
+            <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">flg_ieqj</span> )
+              <span class="ruby-identifier">last_j</span> = <span class="ruby-identifier">ip</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">last_j</span> = <span class="ruby-identifier">ncomp_j</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">jp</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">last_j</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">do</span>
+              <span class="ruby-identifier">ijn</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>; <span class="ruby-identifier">kln</span> = <span class="ruby-value">-1</span>
+              <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">kp</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">ncomp_k</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">do</span>
+                <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">flg_keql</span> )
+                  <span class="ruby-identifier">last_l</span> = <span class="ruby-identifier">kp</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+                <span class="ruby-keyword kw">else</span>
+                  <span class="ruby-identifier">last_l</span> = <span class="ruby-identifier">ncomp_l</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">lp</span> <span class="ruby-keyword kw">in</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">last_l</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">do</span>
+                  <span class="ruby-identifier">kln</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+                  <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">flg_same</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">kln</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ijn</span> <span class="ruby-keyword kw">then</span>
+                    <span class="ruby-keyword kw">next</span>
+                  <span class="ruby-keyword kw">end</span>
+
+                  <span class="ruby-identifier">nn</span> = ( ( <span class="ruby-identifier">ip</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">ncomp_j</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">jp</span> ) <span class="ruby-operator">*</span> <span class="ruby-identifier">ncomp_k</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">kp</span> ) <span class="ruby-operator">*</span> <span class="ruby-identifier">ncomp_l</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">lp</span>
+                  <span class="ruby-identifier">x</span> = <span class="ruby-identifier">g_int</span> [ <span class="ruby-identifier">nn</span> ]
+                  <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">abs</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">thr_zero</span> <span class="ruby-keyword kw">then</span>
+                    <span class="ruby-keyword kw">next</span>
+                  <span class="ruby-keyword kw">end</span>
+                  <span class="ruby-identifier">i</span> = <span class="ruby-identifier">shel_ini</span> [ <span class="ruby-identifier">ash</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">ip</span>
+                  <span class="ruby-identifier">j</span> = <span class="ruby-identifier">shel_ini</span> [ <span class="ruby-identifier">bsh</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">jp</span>
+                  <span class="ruby-identifier">k</span> = <span class="ruby-identifier">shel_ini</span> [ <span class="ruby-identifier">csh</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">kp</span>
+                  <span class="ruby-identifier">l</span> = <span class="ruby-identifier">shel_ini</span> [ <span class="ruby-identifier">dsh</span> ] <span class="ruby-operator">+</span> <span class="ruby-identifier">lp</span>
+<span class="ruby-comment cmt">#</span>
+                  <span class="ruby-identifier">nz_eris</span>.<span class="ruby-identifier">push</span>( <span class="ruby-constant">NZ_eris</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">i</span>, <span class="ruby-identifier">j</span>, <span class="ruby-identifier">k</span>, <span class="ruby-identifier">l</span>, <span class="ruby-identifier">x</span> ) )
+                <span class="ruby-keyword kw">end</span>  
+              <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span> 
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-identifier">nz_eris</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

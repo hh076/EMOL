@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>check_node (Node)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File drt_soci.rb, line 50</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_node</span>
+    <span class="ruby-keyword kw">if</span> ( <span class="ruby-ivar">@is</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@nve</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">$Info</span>.<span class="ruby-identifier">nve</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@orb</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">norb</span> ) <span class="ruby-operator">||</span> (<span class="ruby-ivar">@orb</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">$mo</span>.<span class="ruby-identifier">val_range</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@nve</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">$Info</span>.<span class="ruby-identifier">nve</span> <span class="ruby-operator">-</span> <span class="ruby-value">3</span>)
+<span class="ruby-comment cmt">#                            external の電子数は 2 個以下</span>
+      <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">true</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

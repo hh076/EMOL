@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>show (Mkinput)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File emol_rexml.rb, line 342</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">show</span>
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;Input data for Honda integral \n&quot;</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;       NUMB_SHELL =  %5d \n&quot;</span>, <span class="ruby-ivar">@numb_shell</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;       NUMB_PRIM  =  %5d \n&quot;</span>, <span class="ruby-ivar">@numb_prim</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;       NUMB_ATOM  =  %5d \n&quot;</span>, <span class="ruby-ivar">@numb_atm</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;       MAXL       =  %5d \n \n&quot;</span>, <span class="ruby-ivar">@maxL</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@shel_lqn</span>, <span class="ruby-value str">&quot;SHEL_LQN&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5d&quot;</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@shel_atm</span>, <span class="ruby-value str">&quot;SHEL_ATM&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5d&quot;</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@shel_tem</span>, <span class="ruby-value str">&quot;SHEL_TEM&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5d&quot;</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@shel_add</span>, <span class="ruby-value str">&quot;SHEL_ADD&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5d&quot;</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@shel_ini</span>, <span class="ruby-value str">&quot;SHEL_INI&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5d&quot;</span>)
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@bs_name</span>,  <span class="ruby-value str">&quot;BS_NAME &quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5s&quot;</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@atom_charg</span>, <span class="ruby-value str">&quot;ATOM_CHARG&quot;</span>, <span class="ruby-value">10</span>, <span class="ruby-value str">&quot;%5.2f&quot;</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@atom_xyz</span>, <span class="ruby-value str">&quot;ATOM_XYZ&quot;</span>, <span class="ruby-value">3</span>, <span class="ruby-value str">&quot;%16.8f&quot;</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@prim_exp</span>, <span class="ruby-value str">&quot;PRIM_EXP&quot;</span>, <span class="ruby-value">3</span>, <span class="ruby-value str">&quot;%24.16e&quot;</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n&quot;</span>
+    <span class="ruby-identifier">print_ary</span>(<span class="ruby-ivar">@prim_coe</span>, <span class="ruby-value str">&quot;PRIM_COE&quot;</span>, <span class="ruby-value">3</span>, <span class="ruby-value str">&quot;%24.16e&quot;</span>)
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n\n&quot;</span>
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;Run flags\n&quot;</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;int, rhf, trn, expr, ci = %3d %3d %3d %3d %3d\n&quot;</span>, <span class="ruby-ivar">@flg_int</span>, <span class="ruby-ivar">@flg_rhf</span>, <span class="ruby-ivar">@flg_trn</span>, <span class="ruby-ivar">@flg_expr</span>, <span class="ruby-ivar">@flg_ci</span> )
+    <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot;\n\n&quot;</span>
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;MO classification \n&quot;</span>)
+    <span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;n_frozen, n_core, n_active, n_externl = %3d %3d %3d %3d \n&quot;</span>, <span class="ruby-ivar">@n_frozen</span>, <span class="ruby-ivar">@n_core</span>, <span class="ruby-ivar">@n_active</span>, <span class="ruby-ivar">@n_external</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

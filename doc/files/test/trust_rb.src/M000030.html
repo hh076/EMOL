@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>newton_raphson (test/trust.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/trust.rb, line 57</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">newton_raphson</span>( <span class="ruby-identifier">x0</span>, <span class="ruby-identifier">y0</span>, <span class="ruby-identifier">mu</span>, <span class="ruby-identifier">max_iter</span> )
+    <span class="ruby-identifier">x</span> = <span class="ruby-identifier">x0</span>; <span class="ruby-identifier">y</span> = <span class="ruby-identifier">y0</span>
+    <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot;                  [ %10.4f,  %10.4f ]\n&quot;</span>, <span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span> )
+    <span class="ruby-identifier">max_iter</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">|</span>
+        <span class="ruby-identifier">pot</span> = <span class="ruby-constant">Sample</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">mu</span>, <span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span> ) 
+        <span class="ruby-identifier">e0</span> = <span class="ruby-identifier">pot</span>.<span class="ruby-identifier">at</span>
+        <span class="ruby-identifier">der</span> = <span class="ruby-identifier">pot</span>.<span class="ruby-identifier">derivative</span>
+        <span class="ruby-identifier">hes</span> = <span class="ruby-identifier">pot</span>.<span class="ruby-identifier">hessian</span>
+        <span class="ruby-identifier">lu</span>, <span class="ruby-identifier">perm</span>, <span class="ruby-identifier">sign</span> = <span class="ruby-identifier">hes</span>.<span class="ruby-constant">LU_decomp</span>
+        <span class="ruby-identifier">x_next</span> = <span class="ruby-constant">GSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Linalg</span><span class="ruby-operator">::</span><span class="ruby-constant">LU</span>.<span class="ruby-identifier">solve</span>( <span class="ruby-identifier">hes</span>, <span class="ruby-identifier">perm</span>, <span class="ruby-operator">-</span><span class="ruby-identifier">der</span> )
+        <span class="ruby-identifier">p</span> <span class="ruby-identifier">hes</span>
+        <span class="ruby-identifier">p</span> <span class="ruby-identifier">perm</span>
+        <span class="ruby-identifier">p</span> <span class="ruby-operator">-</span><span class="ruby-identifier">der</span>
+        <span class="ruby-identifier">p</span> <span class="ruby-identifier">x_next</span>
+       <span class="ruby-comment cmt">#pot_next = Sample.new( mu, x_next[ 0 ], x_next[ 1 ] )</span>
+       <span class="ruby-comment cmt">#e0_next = pot_next.at</span>
+     
+        <span class="ruby-identifier">printf</span>( <span class="ruby-value str">&quot; %5d   %10.4f [ %10.4f,  %10.4f ]\n&quot;</span>, <span class="ruby-identifier">i</span>, <span class="ruby-identifier">pot</span>.<span class="ruby-identifier">lambda_abs</span>, <span class="ruby-identifier">x_next</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">x_next</span>[<span class="ruby-value">1</span>] )
+        <span class="ruby-identifier">x</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">x_next</span>[ <span class="ruby-value">0</span> ]
+        <span class="ruby-identifier">y</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">x_next</span>[ <span class="ruby-value">1</span> ]
+    <span class="ruby-keyword kw">end</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
